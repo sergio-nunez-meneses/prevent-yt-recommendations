@@ -1,0 +1,11 @@
+{
+	"manifest_version": 2,
+	"name": "Prevent YouTube Recommendations",
+	"version": "1.0",
+	"content_scripts": [
+		{
+			"matches": ["*://*.youtube.com/*"],
+			"js": ["script.js"]
+		}
+	]
+}
