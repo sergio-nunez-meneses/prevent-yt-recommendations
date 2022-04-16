@@ -1,8 +1,8 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-let recommendations = document.getElementById("primary").firstChild;
-let relatedContents = document.getElementsByTagName(
+const recommendations = document.getElementById("primary").firstChild;
+const relatedContents = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
 let interval;
 
