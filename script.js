@@ -2,7 +2,8 @@
 //  Variables
 // ============================================================================
 let recommendations = document.getElementById("primary").firstChild;
-let relatedContents = document.getElementsByTagName("ytd-watch-next-secondary-results-renderer")[0];
+let relatedContents = document.getElementsByTagName(
+		"ytd-watch-next-secondary-results-renderer")[0];
 
 // ============================================================================
 // Functions
@@ -11,6 +12,8 @@ let relatedContents = document.getElementsByTagName("ytd-watch-next-secondary-re
 // ============================================================================
 // Code to execute
 // ============================================================================
+document.body.style.scrollBehavior = "smooth";
+
 if (window.location.pathname === "/") {
 	if (recommendations && recommendations.tagName === "YTD-RICH-GRID-RENDERER") {
 		recommendations.remove();
@@ -32,10 +35,25 @@ else if (window.location.pathname === "/watch") {
 							&& beforeElement.tagName !== "YTD-CONTINUATION-ITEM-RENDERER") {
 						relatedContent.insertBefore(insertElement, beforeElement);
 					}
+					else {
+						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
+
+						// Scroll to "load more" spinner
+						window.scroll({
+							top     : loadMoreSpinnerCoords.bottom,
+							left    : loadMoreSpinnerCoords.left,
+							behavior: 'smooth',
+						});
+					}
 				}
 			}
 		}
 	}
+
+	// Scroll back to top
+	setTimeout(function() {
+		window.scroll({top: 0, left: 0, behavior: 'smooth'});
+	}, 5000);
 }
 
 // ============================================================================
