@@ -8,6 +8,15 @@ let relatedContents = document.getElementsByTagName(
 // ============================================================================
 // Functions
 // ============================================================================
+function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
+	const tagName = "ytd-continuation-item-renderer";
+
+	return insertEl.tagName.toLowerCase() !== tagName && beforeEl.tagName.toLowerCase() !== tagName;
+}
+
+function setScrollOptions(y, x) {
+	return {top: y, left: x, behavior: 'smooth'};
+}
 
 // ============================================================================
 // Code to execute
@@ -31,19 +40,14 @@ else if (window.location.pathname === "/watch") {
 					let insertElement = relatedVideosContainer[randId];
 					let beforeElement = relatedContent.firstChild;
 
-					if (insertElement.tagName !== "YTD-CONTINUATION-ITEM-RENDERER"
-							&& beforeElement.tagName !== "YTD-CONTINUATION-ITEM-RENDERER") {
+					if (elementsAreNotLoadMoreSpinner(insertElement, beforeElement)) {
 						relatedContent.insertBefore(insertElement, beforeElement);
 					}
 					else {
 						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
 
 						// Scroll to "load more" spinner
-						window.scroll({
-							top     : loadMoreSpinnerCoords.bottom,
-							left    : loadMoreSpinnerCoords.left,
-							behavior: 'smooth',
-						});
+						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
 					}
 				}
 			}
@@ -52,7 +56,7 @@ else if (window.location.pathname === "/watch") {
 
 	// Scroll back to top
 	setTimeout(function() {
-		window.scroll({top: 0, left: 0, behavior: 'smooth'});
+		window.scroll(setScrollOptions(0, 0));
 	}, 5000);
 }
 
