@@ -19,6 +19,36 @@ function setScrollOptions(y, x) {
 	return {top: y, left: x, behavior: 'smooth'};
 }
 
+function shuffleRelatedVideosList(relatedContents) {
+	if (relatedContents) {
+		for (let relatedContent of relatedContents.children) {
+			if (relatedContent.id === "items") {
+				let relatedVideosContainer = relatedContent.children;
+				let containerLength        = relatedVideosContainer.length;
+
+				for (let i = 0; i < containerLength; i++) {
+					let randId        = Math.floor(Math.random() * containerLength);
+					let insertElement = relatedVideosContainer[randId];
+					let beforeElement = relatedContent.firstChild;
+
+					if (elementsAreNotLoadMoreSpinner(insertElement, beforeElement)) {
+						relatedContent.insertBefore(insertElement, beforeElement);
+					}
+					else {
+						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
+
+						// Scroll to "load more" spinner
+						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
+					}
+				}
+			}
+		}
+	}
+
+	// Scroll back to top
+	setTimeout(function() { window.scroll(setScrollOptions(0, 0)); }, 1000);
+}
+
 // ============================================================================
 // Code to execute
 // ============================================================================
@@ -30,35 +60,8 @@ if (window.location.pathname === "/") {
 	}
 }
 else if (window.location.pathname === "/watch") {
-	interval = setInterval(function() {
-		if (relatedContents) {
-			for (let relatedContent of relatedContents.children) {
-				if (relatedContent.id === "items") {
-					let relatedVideosContainer = relatedContent.children;
-					let containerLength        = relatedVideosContainer.length;
-
-					for (let i = 0; i < containerLength; i++) {
-						let randId        = Math.floor(Math.random() * containerLength);
-						let insertElement = relatedVideosContainer[randId];
-						let beforeElement = relatedContent.firstChild;
-
-						if (elementsAreNotLoadMoreSpinner(insertElement, beforeElement)) {
-							relatedContent.insertBefore(insertElement, beforeElement);
-						}
-						else {
-							let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
-
-							// Scroll to "load more" spinner
-							window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
-						}
-					}
-				}
-			}
-		}
-
-		// Scroll back to top
-		setTimeout(function() { window.scroll(setScrollOptions(0, 0)); }, 1000);
-	}, 1250);
+	interval = setInterval(function() { shuffleRelatedVideosList(relatedContents); },
+			1250);
 
 	setTimeout(function() { clearInterval(interval); }, 20000);
 }
