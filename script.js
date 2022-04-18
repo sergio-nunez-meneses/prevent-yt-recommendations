@@ -4,6 +4,8 @@
 const recommendations = document.getElementById("primary").firstChild;
 const relatedContents = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
+const spinner         = document.createElement("div");
+const css             = document.createElement("style");
 let interval;
 
 // ============================================================================
@@ -52,7 +54,63 @@ function shuffleRelatedVideosList(relatedContents) {
 // ============================================================================
 // Code to execute
 // ============================================================================
+css.type                           = "text/css";
+css.innerHTML                      = `
+	.spinner-container {
+		position: fixed;
+		z-index: 10;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+	  display: flex;
+	  justify-content: center;
+	  align-content: center;
+	  width: 100%;
+	  height: 100%;
+	  background-color: rgba(0, 0, 0, 0.7);
+	}
+	.spinner-container .spinner {
+		align-self: center;
+	  width: 64px;
+	  height: 128px;
+	  animation: rotate 2s linear infinite;
+	}
+	.spinner-container .spinner .path {
+	  stroke: #FF0000;
+	  stroke-linecap: round;
+	  animation: dash 1.5s ease-in-out infinite;
+	}
+	.hidden {
+	  display: none !important;
+	}
+	@keyframes rotate {
+	  100% {
+	    transform: rotate(360deg);
+	  }
+	}
+	@keyframes dash {
+	  0% {
+	    stroke-dasharray: 1, 150;
+	    stroke-dashoffset: 0;
+	  }
+	  50% {
+	    stroke-dasharray: 90, 150;
+	    stroke-dashoffset: -35;
+	  }
+	  100% {
+	    stroke-dasharray: 90, 150;
+	    stroke-dashoffset: -124;
+	  }
+	}`;
+spinner.innerHTML                  = `
+	<svg class="spinner" viewBox="0 0 50 50">
+		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
+	</svg>`;
 document.body.style.scrollBehavior = "smooth";
+
+document.getElementsByTagName('head')[0].appendChild(css);
+spinner.classList.add("spinner-container");
 
 if (window.location.pathname === "/") {
 	if (recommendations && recommendations.tagName === "YTD-RICH-GRID-RENDERER") {
@@ -60,10 +118,16 @@ if (window.location.pathname === "/") {
 	}
 }
 else if (window.location.pathname === "/watch") {
+	document.body.insertBefore(spinner, document.body.firstChild);
+
 	interval = setInterval(function() { shuffleRelatedVideosList(relatedContents); },
 			1250);
 
-	setTimeout(function() { clearInterval(interval); }, 20000);
+	setTimeout(function() {
+		clearInterval(interval);
+
+		spinner.classList.add("hidden");
+	}, 20000);
 }
 
 // ============================================================================
