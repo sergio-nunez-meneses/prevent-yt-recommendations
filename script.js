@@ -90,6 +90,7 @@ function setSpinnerCss(relatedContentsCoords) {
 	}
 	.spinner-container .spinner {
 		align-self: center;
+		margin: 10rem 0 0 0;
 	  width: 64px;
 	  height: 128px;
 	  animation: rotate 2s linear infinite;
