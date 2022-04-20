@@ -6,7 +6,8 @@ const relatedContents     = document.getElementsByTagName(
 const recommendations     = document.getElementById("primary").firstChild;
 const shuffleIntervalTime = 1250;
 const shuffleTotalTime    = 20000;
-let spinner, interval, spinnerContainerTop;
+const observerConfig      = {attributes: true, childList: true, subtree: true};
+let spinnerContainerTop, spinner, interval, observer, targetNode;
 
 // ============================================================================
 // Functions
@@ -45,6 +46,11 @@ function shuffleRelatedVideosList(relatedContents) {
 
 					if (elementsAreNotLoadMoreSpinner(insertElement, beforeElement)) {
 						relatedContent.insertBefore(insertElement, beforeElement);
+
+						// TODO: Replace element .ytp-autonav-endscreen-upnext-container or
+						//  .ytp-autonav-endscreen-link-container informations with insertElement information,
+						//  using MutationObserver
+						console.log(insertElement.children[0].children[0].children[0]);
 					}
 					else {
 						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
@@ -137,6 +143,14 @@ function createAndInsertSpinner(spinner) {
 	return spinner;
 }
 
+function setNextVideoInformation(mutationsList, observer) {
+	for (const mutation of mutationsList) {
+		if (mutation.type === "attributes" && mutation.attributeName === "href") {
+			console.log(mutation.target);
+		}
+	}
+}
+
 // ============================================================================
 // Code to execute
 // ============================================================================
@@ -158,6 +172,10 @@ else if (window.location.pathname === "/watch") {
 
 		spinner.remove();
 	}, shuffleTotalTime);
+
+	observer   = new MutationObserver(setNextVideoInformation);
+	targetNode = document.querySelector(".ytp-autonav-endscreen-link-container");
+	observer.observe(targetNode, observerConfig);
 }
 
 // ============================================================================
