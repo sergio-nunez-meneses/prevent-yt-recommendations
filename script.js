@@ -1,9 +1,11 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContents = document.getElementsByTagName(
+const relatedContents     = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
-const recommendations = document.getElementById("primary").firstChild;
+const recommendations     = document.getElementById("primary").firstChild;
+const shuffleIntervalTime = 1250;
+const shuffleTotalTime    = 40000;
 let spinner, interval;
 
 // ============================================================================
@@ -137,13 +139,13 @@ else if (window.location.pathname === "/watch") {
 	spinner  = createAndInsertSpinner();
 	interval = setInterval(function() {
 		shuffleRelatedVideosList(relatedContents);
-	}, 1250);
+	}, shuffleIntervalTime);
 
 	setTimeout(function() {
 		clearInterval(interval);
 
 		spinner.remove();
-	}, 20000);
+	}, shuffleTotalTime);
 }
 
 // ============================================================================
