@@ -5,7 +5,6 @@ const relatedContents = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
 const recommendations = document.getElementById("primary").firstChild;
 const spinner         = document.createElement("div");
-const css             = document.createElement("style");
 let interval;
 
 // ============================================================================
@@ -51,10 +50,9 @@ function shuffleRelatedVideosList(relatedContents) {
 	setTimeout(function() { window.scroll(setScrollOptions(0, 0)); }, 1000);
 }
 
-// ============================================================================
-// Code to execute
-// ============================================================================
-css.innerHTML                      = `
+function setSpinnerCss() {
+	const css     = document.createElement("style");
+	css.innerHTML = `
 	.spinner-container {
 		position: fixed;
 		z-index: 10;
@@ -84,9 +82,7 @@ css.innerHTML                      = `
 	  display: none !important;
 	}
 	@keyframes rotate {
-	  100% {
-	    transform: rotate(360deg);
-	  }
+	  100% { transform: rotate(360deg); }
 	}
 	@keyframes dash {
 	  0% {
@@ -102,13 +98,20 @@ css.innerHTML                      = `
 	    stroke-dashoffset: -124;
 	  }
 	}`;
-spinner.innerHTML                  = `
+	document.getElementsByTagName('head')[0].appendChild(css);
+}
+
+// ============================================================================
+// Code to execute
+// ============================================================================
+document.body.style.scrollBehavior = "smooth";
+
+setSpinnerCss();
+
+spinner.innerHTML = `
 	<svg class="spinner" viewBox="0 0 50 50">
 		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
 	</svg>`;
-document.body.style.scrollBehavior = "smooth";
-
-document.getElementsByTagName('head')[0].appendChild(css);
 spinner.classList.add("spinner-container");
 
 if (window.location.pathname === "/") {
