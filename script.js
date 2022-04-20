@@ -5,7 +5,7 @@ const relatedContents     = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
 const recommendations     = document.getElementById("primary").firstChild;
 const shuffleIntervalTime = 1250;
-const shuffleTotalTime    = 40000;
+const shuffleTotalTime    = 20000;
 let spinner, interval;
 
 // ============================================================================
@@ -53,7 +53,7 @@ function shuffleRelatedVideosList(relatedContents) {
 	setTimeout(function() { window.scroll(setScrollOptions(0, 0)); }, 1000);
 }
 
-function setSpinnerCss() {
+function setSpinnerCss(relatedContentsCoords) {
 	document.body.style.scrollBehavior = "smooth";
 
 	const css     = document.createElement("style");
@@ -61,16 +61,12 @@ function setSpinnerCss() {
 	.spinner-container {
 		position: fixed;
 		z-index: 10;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
+		top: ${relatedContentsCoords.top}px;
+		left: ${relatedContentsCoords.left}px;
 	  display: flex;
 	  flex-direction: column;
-	  justify-content: center;
-	  align-content: center;
-	  width: 100%;
-	  height: 100%;
+	  width: ${relatedContentsCoords.width}px;
+	  height: ${relatedContentsCoords.height}px;
 	  background-color: rgba(0, 0, 0, 0.7);
 	}
 	.spinner-container .spinner {
@@ -113,7 +109,8 @@ function setSpinnerCss() {
 }
 
 function createAndInsertSpinner(spinner) {
-	setSpinnerCss();
+	const relatedContents = document.getElementById("related");
+	setSpinnerCss(relatedContents.getBoundingClientRect());
 
 	spinner           = document.createElement("div");
 	spinner.className = "spinner-container";
@@ -122,7 +119,7 @@ function createAndInsertSpinner(spinner) {
 		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
 	</svg>
 	<span id="spinner-text" class="text">shuffling</span>`;
-	document.body.insertBefore(spinner, document.body.firstChild);
+	relatedContents.insertBefore(spinner, relatedContents.firstChild);
 
 	return spinner;
 }
