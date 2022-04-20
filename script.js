@@ -139,6 +139,8 @@ if (window.location.pathname === "/") {
 	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
+	document.querySelector(".ytp-large-play-button").click();
+
 	spinner  = createAndInsertSpinner();
 	interval = setInterval(function() {
 		shuffleRelatedVideosList(relatedContents);
