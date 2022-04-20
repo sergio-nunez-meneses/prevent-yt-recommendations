@@ -4,7 +4,7 @@
 const relatedContents = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
 const recommendations = document.getElementById("primary").firstChild;
-const spinner         = document.createElement("div");
+const spinner         = createSpinner();
 let interval;
 
 // ============================================================================
@@ -101,6 +101,17 @@ function setSpinnerCss() {
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
+function createSpinner() {
+	const spinnerContainer     = document.createElement("div");
+	spinnerContainer.innerHTML = `
+	<svg class="spinner" viewBox="0 0 50 50">
+		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
+	</svg>`;
+	spinnerContainer.classList.add("spinner-container");
+
+	return spinnerContainer;
+}
+
 // ============================================================================
 // Code to execute
 // ============================================================================
@@ -108,24 +119,13 @@ document.body.style.scrollBehavior = "smooth";
 
 setSpinnerCss();
 
-spinner.innerHTML = `
-	<svg class="spinner" viewBox="0 0 50 50">
-		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
-	</svg>`;
-spinner.classList.add("spinner-container");
-
 if (window.location.pathname === "/") {
 	if (recommendations && recommendations.tagName === "YTD-RICH-GRID-RENDERER") {
 		recommendations.remove();
 	}
 }
 else if (window.location.pathname === "/watch") {
-	if (!spinner) {
-		document.body.insertBefore(spinner, document.body.firstChild);
-	}
-	else if (spinner.classList.contains("hidden")) {
-		spinner.classList.remove("hidden");
-	}
+	document.body.insertBefore(spinner, document.body.firstChild);
 
 	interval = setInterval(function() { shuffleRelatedVideosList(relatedContents); },
 			1250);
