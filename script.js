@@ -85,7 +85,7 @@ function setSpinnerCss() {
 	.spinner-container .text {
 		align-self: center;
 		font-size: 2rem;
-		color: background-color: rgba(255, 0, 0, 0.8);
+		color: rgba(255, 0, 0, 0.75);
 	}
 	.hidden {
 	  display: none !important;
@@ -142,7 +142,7 @@ else if (window.location.pathname === "/watch") {
 	setTimeout(function() {
 		clearInterval(interval);
 
-		spinner.classList.add("hidden");
+		spinner.remove();
 	}, 20000);
 }
 
