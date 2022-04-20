@@ -51,6 +51,8 @@ function shuffleRelatedVideosList(relatedContents) {
 }
 
 function setSpinnerCss() {
+	document.body.style.scrollBehavior = "smooth";
+
 	const css     = document.createElement("style");
 	css.innerHTML = `
 	.spinner-container {
@@ -102,6 +104,8 @@ function setSpinnerCss() {
 }
 
 function createSpinner() {
+	setSpinnerCss();
+
 	const spinnerContainer     = document.createElement("div");
 	spinnerContainer.innerHTML = `
 	<svg class="spinner" viewBox="0 0 50 50">
@@ -115,10 +119,6 @@ function createSpinner() {
 // ============================================================================
 // Code to execute
 // ============================================================================
-document.body.style.scrollBehavior = "smooth";
-
-setSpinnerCss();
-
 if (window.location.pathname === "/") {
 	if (recommendations && recommendations.tagName === "YTD-RICH-GRID-RENDERER") {
 		recommendations.remove();
