@@ -43,8 +43,6 @@ function shuffleRelatedVideosList(relatedContents) {
 						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
 					}
 				}
-				// Add dots to spinner text
-				document.getElementById("spinner-text").innerText += ".";
 			}
 		}
 	}
@@ -80,14 +78,6 @@ function setSpinnerCss(relatedContentsCoords) {
 	  stroke-linecap: round;
 	  animation: dash 1.5s ease-in-out infinite;
 	}
-	.spinner-container .text {
-		align-self: center;
-		font-size: 2rem;
-		color: rgba(255, 0, 0, 0.75);
-	}
-	.hidden {
-	  display: none !important;
-	}
 	@keyframes rotate {
 	  100% { transform: rotate(360deg); }
 	}
@@ -117,8 +107,7 @@ function createAndInsertSpinner(spinner) {
 	spinner.innerHTML = `
 	<svg class="spinner" viewBox="0 0 50 50">
 		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
-	</svg>
-	<span id="spinner-text" class="text">shuffling</span>`;
+	</svg>`;
 	relatedContents.insertBefore(spinner, relatedContents.firstChild);
 
 	return spinner;
