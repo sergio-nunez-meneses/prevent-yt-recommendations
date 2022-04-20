@@ -11,6 +11,12 @@ let spinner, interval, spinnerContainerTop;
 // ============================================================================
 // Functions
 // ============================================================================
+function removeVideoRecommendations(recommendations) {
+	if (recommendations && recommendations.tagName.toLowerCase() === "ytd-rich-grid-renderer") {
+		recommendations.remove();
+	}
+}
+
 function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
 	const tagName = "ytd-continuation-item-renderer";
 
@@ -39,6 +45,7 @@ function shuffleRelatedVideosList(relatedContents) {
 					else {
 						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
 
+						// Scroll to "load more" spinner
 						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
 
 						if (window.scrollY > 0) {
@@ -50,8 +57,8 @@ function shuffleRelatedVideosList(relatedContents) {
 		}
 	}
 
-	// Scroll back to top
 	setTimeout(function() {
+		// Scroll back to top
 		window.scroll(setScrollOptions(0, 0));
 
 		if (window.scrollY === 0) {
@@ -129,9 +136,7 @@ function createAndInsertSpinner(spinner) {
 // Code to execute
 // ============================================================================
 if (window.location.pathname === "/") {
-	if (recommendations && recommendations.tagName === "YTD-RICH-GRID-RENDERER") {
-		recommendations.remove();
-	}
+	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
 	spinner  = createAndInsertSpinner();
