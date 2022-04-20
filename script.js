@@ -54,7 +54,6 @@ function shuffleRelatedVideosList(relatedContents) {
 // ============================================================================
 // Code to execute
 // ============================================================================
-css.type                           = "text/css";
 css.innerHTML                      = `
 	.spinner-container {
 		position: fixed;
