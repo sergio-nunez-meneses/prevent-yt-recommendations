@@ -4,8 +4,7 @@
 const relatedContents = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
 const recommendations = document.getElementById("primary").firstChild;
-const spinner         = createSpinner();
-let interval;
+let spinner, interval;
 
 // ============================================================================
 // Functions
@@ -103,17 +102,18 @@ function setSpinnerCss() {
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
-function createSpinner() {
+function createAndInsertSpinner(spinner) {
 	setSpinnerCss();
 
-	const spinnerContainer     = document.createElement("div");
-	spinnerContainer.innerHTML = `
+	spinner           = document.createElement("div");
+	spinner.className = "spinner-container";
+	spinner.innerHTML = `
 	<svg class="spinner" viewBox="0 0 50 50">
 		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
 	</svg>`;
-	spinnerContainer.classList.add("spinner-container");
+	document.body.insertBefore(spinner, document.body.firstChild);
 
-	return spinnerContainer;
+	return spinner;
 }
 
 // ============================================================================
@@ -125,10 +125,10 @@ if (window.location.pathname === "/") {
 	}
 }
 else if (window.location.pathname === "/watch") {
-	document.body.insertBefore(spinner, document.body.firstChild);
-
-	interval = setInterval(function() { shuffleRelatedVideosList(relatedContents); },
-			1250);
+	spinner  = createAndInsertSpinner();
+	interval = setInterval(function() {
+		shuffleRelatedVideosList(relatedContents);
+	}, 1250);
 
 	setTimeout(function() {
 		clearInterval(interval);
