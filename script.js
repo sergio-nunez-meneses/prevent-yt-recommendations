@@ -17,6 +17,10 @@ function removeVideoRecommendations(recommendations) {
 	}
 }
 
+function videoIsPlaying(video) {
+	return video.readyState > 2 && !video.paused && !video.ended;
+}
+
 function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
 	const tagName = "ytd-continuation-item-renderer";
 
@@ -139,7 +143,9 @@ if (window.location.pathname === "/") {
 	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
-	document.querySelector(".ytp-large-play-button").click();
+	if (!videoIsPlaying(document.getElementsByTagName("video")[0])) {
+		document.querySelector(".ytp-large-play-button").click();
+	}
 
 	spinner  = createAndInsertSpinner();
 	interval = setInterval(function() {
