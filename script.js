@@ -6,7 +6,7 @@ const relatedContents     = document.getElementsByTagName(
 const recommendations     = document.getElementById("primary").firstChild;
 const shuffleIntervalTime = 1250;
 const shuffleTotalTime    = 20000;
-let spinner, interval;
+let spinner, interval, spinnerContainerTop;
 
 // ============================================================================
 // Functions
@@ -39,8 +39,11 @@ function shuffleRelatedVideosList(relatedContents) {
 					else {
 						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
 
-						// Scroll to "load more" spinner
 						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
+
+						if (window.scrollY > 0) {
+							spinner.style.setProperty("top", "0");
+						}
 					}
 				}
 			}
@@ -48,18 +51,25 @@ function shuffleRelatedVideosList(relatedContents) {
 	}
 
 	// Scroll back to top
-	setTimeout(function() { window.scroll(setScrollOptions(0, 0)); }, 1000);
+	setTimeout(function() {
+		window.scroll(setScrollOptions(0, 0));
+
+		if (window.scrollY === 0) {
+			spinner.style.setProperty("top", `${spinnerContainerTop}px`);
+		}
+	}, 1000);
 }
 
 function setSpinnerCss(relatedContentsCoords) {
 	document.body.style.scrollBehavior = "smooth";
+	spinnerContainerTop                = relatedContentsCoords.top;
 
 	const css     = document.createElement("style");
 	css.innerHTML = `
 	.spinner-container {
 		position: fixed;
 		z-index: 10;
-		top: ${relatedContentsCoords.top}px;
+		top: ${spinnerContainerTop}px;
 		left: ${relatedContentsCoords.left}px;
 	  display: flex;
 	  flex-direction: column;
@@ -79,7 +89,9 @@ function setSpinnerCss(relatedContentsCoords) {
 	  animation: dash 1.5s ease-in-out infinite;
 	}
 	@keyframes rotate {
-	  100% { transform: rotate(360deg); }
+	  100% {
+	    transform: rotate(360deg);
+	  }
 	}
 	@keyframes dash {
 	  0% {
