@@ -1,7 +1,8 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContents     = document.getElementsByTagName("ytd-watch-next-secondary-results-renderer")[0];
+const relatedContents     = document.getElementsByTagName(
+		"ytd-watch-next-secondary-results-renderer")[0];
 const recommendations     = document.getElementById("primary").firstChild;
 const currentVideo        = document.getElementsByTagName("video")[0];
 const observerConfig      = {attributes: true, childList: true, subtree: true};
@@ -11,7 +12,6 @@ let newFirstVideoIsSet    = false;
 let newFirstVideoLink;
 let spinner;
 let interval;
-let currentVideoObserver;
 
 // ============================================================================
 // Functions
@@ -55,9 +55,7 @@ function shuffleRelatedVideosList(relatedContents) {
 						newFirstVideoIsSet = true;
 					}
 					else {
-						let loadMoreSpinnerCoords = newFirstVideo.getBoundingClientRect();
-
-						// Scroll to "load more" spinner
+						let loadMoreSpinnerCoords = newFirstVideo.getBoundingClientRect(); // Scroll to "load more" spinner
 						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
 
 						if (window.scrollY > 0) {
@@ -70,8 +68,7 @@ function shuffleRelatedVideosList(relatedContents) {
 	}
 
 	setTimeout(function() {
-		// Scroll back to top
-		window.scroll(setScrollOptions(0, 0));
+		window.scroll(setScrollOptions(0, 0)); // Scroll back to top
 
 		if (window.scrollY === 0) {
 			spinner.style.setProperty("top", appendPxToInt(spinnerContainerTop));
@@ -130,10 +127,6 @@ function setSpinnerCss(relatedContentsCoords) {
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
-function appendPxToInt(int) {
-	return int + "px";
-}
-
 function createAndInsertSpinner(spinner) {
 	const relatedContents = document.getElementById("related");
 	setSpinnerCss(relatedContents.getBoundingClientRect());
@@ -147,6 +140,10 @@ function createAndInsertSpinner(spinner) {
 	relatedContents.insertBefore(spinner, relatedContents.firstChild);
 
 	return spinner;
+}
+
+function appendPxToInt(int) {
+	return int + "px";
 }
 
 function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
@@ -170,19 +167,18 @@ else if (window.location.pathname === "/watch") {
 		document.querySelector(".ytp-large-play-button").click();
 	}
 
-	spinner  = createAndInsertSpinner();
-	interval = setInterval(function() {
+	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
+	spinner                    = createAndInsertSpinner();
+	interval                   = setInterval(function() {
 		shuffleRelatedVideosList(relatedContents);
 	}, shuffleIntervalTime);
 
+	currentVideoObserver.observe(currentVideo, observerConfig);
 	setTimeout(function() {
 		clearInterval(interval);
 
 		spinner.remove();
 	}, shuffleTotalTime);
-
-	currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-	currentVideoObserver.observe(currentVideo, observerConfig);
 }
 
 // ============================================================================
