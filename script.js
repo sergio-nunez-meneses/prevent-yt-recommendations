@@ -149,8 +149,10 @@ function createAndInsertSpinner(spinner) {
 function setNextVideoInformation(mutationsList, observer) {
 	for (const mutation of mutationsList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "href" && newFirstVideoIsSet) {
-			// mutation.target.href = newFirstVideo.href;
-			newFirstVideoIsSet   = false;
+			const newFirstVideoData = newFirstVideo.children[0];
+			const newVideoThumbnail = newFirstVideoData.children[0].children[0];
+			const newVideoDetails   = newFirstVideoData.children[1].children[0].children[0].children;
+			newFirstVideoIsSet      = false;
 		}
 	}
 }
