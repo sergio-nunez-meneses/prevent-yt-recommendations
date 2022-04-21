@@ -147,22 +147,30 @@ function createAndInsertSpinner(spinner) {
 	return spinner;
 }
 
-function setNextVideoInformation(mutationsList, observer) {
+function getNewFirstVideoInformation(mutationsList, observer) {
 	for (const mutation of mutationsList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "href" && newFirstVideoIsSet) {
-			const newFirstVideoData       = newFirstVideo.children[0];
-			const newVideoThumbnail       = newFirstVideoData.children[0].children[0];
-			const newVideoImage           = newVideoThumbnail.children[1].firstElementChild.src;
-			const newVideoLink            = newVideoThumbnail.href;
-			const newVideoDetails         = newFirstVideoData.children[1].children[0].children[0].children;
-			const newVideoTitle           = newVideoDetails[0].innerText;
-			const newVideoAuthorViewsDate = newVideoDetails[1].children[0].children[0].children;
-			const newVideoAuthor          = newVideoAuthorViewsDate[0].children[0].firstElementChild
+			const newFirstVideoData                     = newFirstVideo.children[0];
+			const newVideoThumbnail                     = newFirstVideoData.children[0].children[0];
+			const newVideoImage                         = newVideoThumbnail.children[1].firstElementChild.src;
+			const newVideoLink                          = newVideoThumbnail.href;
+			const newVideoDetails                       = newFirstVideoData.children[1].children[0].children[0].children;
+			const newVideoTitle                         = newVideoDetails[0].innerText;
+			const newVideoAuthorViewsDate               = newVideoDetails[1].children[0].children[0].children;
+			const newVideoAuthor                        = newVideoAuthorViewsDate[0].children[0].firstElementChild
 					.firstElementChild.firstElementChild.innerText;
-			const newVideoViewsDate       = newVideoAuthorViewsDate[1].children;
-			const newVideoViews           = newVideoViewsDate[0].innerText;
-			const newVideoDate            = newVideoViewsDate[1].innerText;
-			newFirstVideoIsSet            = false;
+			const newVideoViewsDate                     = newVideoAuthorViewsDate[1].children;
+			const newVideoViews                         = newVideoViewsDate[0].innerText;
+			const newVideoDate                          = newVideoViewsDate[1].innerText;
+			const nextVideo                             = mutation.target;
+			const nextVideoDetails                      = nextVideo.children[1].children;
+			nextVideo.href                              = newVideoLink;
+			nextVideo.children[0].style.backgroundImage = `url("${newVideoImage}")`;
+			nextVideoDetails[1].innerText               = newVideoTitle;
+			nextVideoDetails[2].innerText               = newVideoAuthor;
+			nextVideoDetails[3].innerText               = newVideoViews + " • " + newVideoDate;
+			nextVideoDetails[4].innerText               = newVideoAuthor + " • " + newVideoViews;
+			newFirstVideoIsSet                          = false;
 		}
 	}
 }
@@ -189,7 +197,7 @@ else if (window.location.pathname === "/watch") {
 		spinner.remove();
 	}, shuffleTotalTime);
 
-	observer   = new MutationObserver(setNextVideoInformation);
+	observer   = new MutationObserver(getNewFirstVideoInformation);
 	targetNode = document.querySelector(".ytp-autonav-endscreen-link-container");
 	observer.observe(targetNode, observerConfig);
 }
