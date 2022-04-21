@@ -1,13 +1,14 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContents     = document.getElementsByTagName(
-		"ytd-watch-next-secondary-results-renderer")[0];
+const relatedContents     = document.getElementsByTagName("ytd-watch-next-secondary-results-renderer")[0];
 const recommendations     = document.getElementById("primary").firstChild;
-const shuffleIntervalTime = 1250;
-const shuffleTotalTime    = 20000;
 const observerConfig      = {attributes: true, childList: true, subtree: true};
-let spinnerContainerTop, spinner, interval, observer, targetNode;
+const shuffleIntervalTime = 1250, shuffleTotalTime = 20000;
+let spinnerContainerTop;
+let spinner, targetNode;
+let interval;
+let observer;
 
 // ============================================================================
 // Functions
