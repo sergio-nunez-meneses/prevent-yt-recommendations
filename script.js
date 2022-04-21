@@ -71,7 +71,7 @@ function shuffleRelatedVideosList(relatedContents) {
 		window.scroll(setScrollOptions(0, 0));
 
 		if (window.scrollY === 0) {
-			spinner.style.setProperty("top", `${spinnerContainerTop}px`);
+			spinner.style.setProperty("top", appendPxToInt(spinnerContainerTop));
 		}
 	}, 1000);
 }
@@ -85,12 +85,12 @@ function setSpinnerCss(relatedContentsCoords) {
 	.spinner-container {
 		position: fixed;
 		z-index: 10;
-		top: ${spinnerContainerTop}px;
-		left: ${relatedContentsCoords.left}px;
+		top: ${appendPxToInt(spinnerContainerTop)};
+		left: ${appendPxToInt(relatedContentsCoords.left)};
 	  display: flex;
 	  flex-direction: column;
-	  width: ${relatedContentsCoords.width}px;
-	  height: ${relatedContentsCoords.height}px;
+	  width: ${appendPxToInt(relatedContentsCoords.width)};
+	  height: ${appendPxToInt(relatedContentsCoords.height)};
 	  background-color: rgba(0, 0, 0, 0.7);
 	}
 	.spinner-container .spinner {
@@ -127,6 +127,10 @@ function setSpinnerCss(relatedContentsCoords) {
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
+function appendPxToInt(int) {
+	return int + "px";
+}
+
 function createAndInsertSpinner(spinner) {
 	const relatedContents = document.getElementById("related");
 	setSpinnerCss(relatedContents.getBoundingClientRect());
@@ -145,7 +149,7 @@ function createAndInsertSpinner(spinner) {
 function setNextVideoInformation(mutationsList, observer) {
 	for (const mutation of mutationsList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "href" && newFirstVideoIsSet) {
-			mutation.target.href = newFirstVideo.href;
+			// mutation.target.href = newFirstVideo.href;
 			newFirstVideoIsSet   = false;
 		}
 	}
