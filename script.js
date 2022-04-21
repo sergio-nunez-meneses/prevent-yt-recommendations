@@ -1,17 +1,15 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContents     = document.getElementsByTagName(
+const relatedContents   = document.getElementsByTagName(
 		"ytd-watch-next-secondary-results-renderer")[0];
-const recommendations     = document.getElementById("primary").firstChild;
-const currentVideo        = document.getElementsByTagName("video")[0];
-const observerConfig      = {attributes: true, childList: true, subtree: true};
-const shuffleIntervalTime = 1250, shuffleTotalTime = 10000;
-let spinnerContainerTop   = 0;
-let newFirstVideoIsSet    = false;
+const recommendations   = document.getElementById("primary").firstChild;
+const currentVideo      = document.getElementsByTagName("video")[0];
+const observerConfig    = {attributes: true, childList: true, subtree: true};
+let spinnerContainerTop = 0;
+let newFirstVideoIsSet  = false;
 let newFirstVideoLink;
 let spinner;
-let interval;
 
 // ============================================================================
 // Functions
@@ -73,6 +71,7 @@ function shuffleRelatedVideosList(relatedContents) {
 		if (window.scrollY === 0) {
 			spinner.style.setProperty("top", appendPxToInt(spinnerContainerTop));
 		}
+		spinner.remove();
 	}, 1000);
 }
 
@@ -123,23 +122,35 @@ function setSpinnerCss(relatedContentsCoords) {
 	    stroke-dasharray: 90, 150;
 	    stroke-dashoffset: -124;
 	  }
+	}
+	.shuffle-button {
+		margin: 0 0 1rem 0;
+		width: 100%;
 	}`;
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
-function createAndInsertSpinner(spinner) {
-	const relatedContents = document.getElementById("related");
-	setSpinnerCss(relatedContents.getBoundingClientRect());
-
+function createAndInsertSpinner(relatedContents) {
 	spinner           = document.createElement("div");
 	spinner.className = "spinner-container";
 	spinner.innerHTML = `
 	<svg class="spinner" viewBox="0 0 50 50">
 		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
 	</svg>`;
+
 	relatedContents.insertBefore(spinner, relatedContents.firstChild);
 
 	return spinner;
+}
+
+function createShuffleButton(relatedContents) {
+	const button     = document.createElement("button");
+	button.className = "shuffle-button";
+	button.innerText = "Shuffle";
+
+	relatedContents.insertBefore(button, relatedContents.firstElementChild);
+
+	return button;
 }
 
 function appendPxToInt(int) {
@@ -149,7 +160,7 @@ function appendPxToInt(int) {
 function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
 	for (const mutation of mutationList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "style") {
-			if (mutation.target.ended) { // Video ended
+			if (mutation.target.ended) { // Current video ended
 				window.location.href = newFirstVideoLink;
 			}
 		}
@@ -167,18 +178,18 @@ else if (window.location.pathname === "/watch") {
 		document.querySelector(".ytp-large-play-button").click();
 	}
 
+	const related              = document.getElementById("related");
 	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-	spinner                    = createAndInsertSpinner();
-	interval                   = setInterval(function() {
+	const shuffleButton        = createShuffleButton(related);
+
+	setSpinnerCss(related.getBoundingClientRect());
+
+	shuffleButton.addEventListener("click", function() {
+		spinner = createAndInsertSpinner(related);
+
 		shuffleRelatedVideosList(relatedContents);
-	}, shuffleIntervalTime);
-
-	currentVideoObserver.observe(currentVideo, observerConfig);
-	setTimeout(function() {
-		clearInterval(interval);
-
-		spinner.remove();
-	}, shuffleTotalTime);
+		currentVideoObserver.observe(currentVideo, observerConfig);
+	})
 }
 
 // ============================================================================
