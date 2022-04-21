@@ -1,7 +1,8 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContents     = document.getElementsByTagName("ytd-watch-next-secondary-results-renderer")[0];
+const relatedContents     = document.getElementsByTagName(
+		"ytd-watch-next-secondary-results-renderer")[0];
 const recommendations     = document.getElementById("primary").firstChild;
 const observerConfig      = {attributes: true, childList: true, subtree: true};
 const shuffleIntervalTime = 1250, shuffleTotalTime = 10000;
@@ -149,10 +150,19 @@ function createAndInsertSpinner(spinner) {
 function setNextVideoInformation(mutationsList, observer) {
 	for (const mutation of mutationsList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "href" && newFirstVideoIsSet) {
-			const newFirstVideoData = newFirstVideo.children[0];
-			const newVideoThumbnail = newFirstVideoData.children[0].children[0];
-			const newVideoDetails   = newFirstVideoData.children[1].children[0].children[0].children;
-			newFirstVideoIsSet      = false;
+			const newFirstVideoData       = newFirstVideo.children[0];
+			const newVideoThumbnail       = newFirstVideoData.children[0].children[0];
+			const newVideoImage           = newVideoThumbnail.children[1].firstElementChild.src;
+			const newVideoLink            = newVideoThumbnail.href;
+			const newVideoDetails         = newFirstVideoData.children[1].children[0].children[0].children;
+			const newVideoTitle           = newVideoDetails[0].innerText;
+			const newVideoAuthorViewsDate = newVideoDetails[1].children[0].children[0].children;
+			const newVideoAuthor          = newVideoAuthorViewsDate[0].children[0].firstElementChild
+					.firstElementChild.firstElementChild.innerText;
+			const newVideoViewsDate       = newVideoAuthorViewsDate[1].children;
+			const newVideoViews           = newVideoViewsDate[0].innerText;
+			const newVideoDate            = newVideoViewsDate[1].innerText;
+			newFirstVideoIsSet            = false;
 		}
 	}
 }
