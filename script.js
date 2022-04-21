@@ -5,8 +5,9 @@ const relatedContents     = document.getElementsByTagName("ytd-watch-next-second
 const recommendations     = document.getElementById("primary").firstChild;
 const observerConfig      = {attributes: true, childList: true, subtree: true};
 const shuffleIntervalTime = 1250, shuffleTotalTime = 20000;
+let newNextVideoIsSet     = false;
 let spinnerContainerTop;
-let spinner, targetNode;
+let spinner, targetNode, newNextVideoThumbnail;
 let interval;
 let observer;
 
@@ -48,10 +49,10 @@ function shuffleRelatedVideosList(relatedContents) {
 					if (elementsAreNotLoadMoreSpinner(insertElement, beforeElement)) {
 						relatedContent.insertBefore(insertElement, beforeElement);
 
-						// TODO: Replace element .ytp-autonav-endscreen-upnext-container or
-						//  .ytp-autonav-endscreen-link-container informations with insertElement information,
-						//  using MutationObserver
-						console.log(insertElement.children[0].children[0].children[0]);
+						if (i === (containerLength - 1)) {
+							newNextVideoThumbnail = insertElement.children[0].children[0].children[0];
+							newNextVideoIsSet     = true;
+						}
 					}
 					else {
 						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
@@ -146,8 +147,9 @@ function createAndInsertSpinner(spinner) {
 
 function setNextVideoInformation(mutationsList, observer) {
 	for (const mutation of mutationsList) {
-		if (mutation.type === "attributes" && mutation.attributeName === "href") {
-			console.log(mutation.target);
+		if (mutation.type === "attributes" && mutation.attributeName === "href" && newNextVideoIsSet) {
+			mutation.target.href = newNextVideoThumbnail.href;
+			newNextVideoIsSet    = false;
 		}
 	}
 }
