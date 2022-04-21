@@ -1,16 +1,17 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContents     = document.getElementsByTagName(
-		"ytd-watch-next-secondary-results-renderer")[0];
+const relatedContents     = document.getElementsByTagName("ytd-watch-next-secondary-results-renderer")[0];
 const recommendations     = document.getElementById("primary").firstChild;
+const currentVideo        = document.getElementsByTagName("video")[0];
 const observerConfig      = {attributes: true, childList: true, subtree: true};
 const shuffleIntervalTime = 1250, shuffleTotalTime = 10000;
+let spinnerContainerTop   = 0;
 let newFirstVideoIsSet    = false;
-let spinnerContainerTop;
-let spinner, targetNode, newFirstVideo;
+let newFirstVideoLink;
+let spinner;
 let interval;
-let observer;
+let currentVideoObserver;
 
 // ============================================================================
 // Functions
@@ -45,11 +46,12 @@ function shuffleRelatedVideosList(relatedContents) {
 				for (let i = 0; i < containerLength; i++) {
 					let randId              = Math.floor(Math.random() * containerLength);
 					let temporaryFirstVideo = relatedContent.firstChild;
-					newFirstVideo           = relatedVideosContainer[randId];
+					let newFirstVideo       = relatedVideosContainer[randId];
 
 					if (elementsAreNotLoadMoreSpinner(newFirstVideo, temporaryFirstVideo)) {
 						relatedContent.insertBefore(newFirstVideo, temporaryFirstVideo);
 
+						newFirstVideoLink  = newFirstVideo.children[0].children[0].children[0].href;
 						newFirstVideoIsSet = true;
 					}
 					else {
@@ -147,30 +149,12 @@ function createAndInsertSpinner(spinner) {
 	return spinner;
 }
 
-function getNewFirstVideoInformation(mutationsList, observer) {
-	for (const mutation of mutationsList) {
-		if (mutation.type === "attributes" && mutation.attributeName === "href" && newFirstVideoIsSet) {
-			const newFirstVideoData                     = newFirstVideo.children[0];
-			const newVideoThumbnail                     = newFirstVideoData.children[0].children[0];
-			const newVideoImage                         = newVideoThumbnail.children[1].firstElementChild.src;
-			const newVideoLink                          = newVideoThumbnail.href;
-			const newVideoDetails                       = newFirstVideoData.children[1].children[0].children[0].children;
-			const newVideoTitle                         = newVideoDetails[0].innerText;
-			const newVideoAuthorViewsDate               = newVideoDetails[1].children[0].children[0].children;
-			const newVideoAuthor                        = newVideoAuthorViewsDate[0].children[0].firstElementChild
-					.firstElementChild.firstElementChild.innerText;
-			const newVideoViewsDate                     = newVideoAuthorViewsDate[1].children;
-			const newVideoViews                         = newVideoViewsDate[0].innerText;
-			const newVideoDate                          = newVideoViewsDate[1].innerText;
-			const nextVideo                             = mutation.target;
-			const nextVideoDetails                      = nextVideo.children[1].children;
-			nextVideo.href                              = newVideoLink;
-			nextVideo.children[0].style.backgroundImage = `url("${newVideoImage}")`;
-			nextVideoDetails[1].innerText               = newVideoTitle;
-			nextVideoDetails[2].innerText               = newVideoAuthor;
-			nextVideoDetails[3].innerText               = newVideoViews + " • " + newVideoDate;
-			nextVideoDetails[4].innerText               = newVideoAuthor + " • " + newVideoViews;
-			newFirstVideoIsSet                          = false;
+function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
+	for (const mutation of mutationList) {
+		if (mutation.type === "attributes" && mutation.attributeName === "style") {
+			if (mutation.target.ended) { // Video ended
+				window.location.href = newFirstVideoLink;
+			}
 		}
 	}
 }
@@ -182,7 +166,7 @@ if (window.location.pathname === "/") {
 	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
-	if (!videoIsPlaying(document.getElementsByTagName("video")[0])) {
+	if (!videoIsPlaying(currentVideo)) {
 		document.querySelector(".ytp-large-play-button").click();
 	}
 
@@ -197,9 +181,8 @@ else if (window.location.pathname === "/watch") {
 		spinner.remove();
 	}, shuffleTotalTime);
 
-	observer   = new MutationObserver(getNewFirstVideoInformation);
-	targetNode = document.querySelector(".ytp-autonav-endscreen-link-container");
-	observer.observe(targetNode, observerConfig);
+	currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
+	currentVideoObserver.observe(currentVideo, observerConfig);
 }
 
 // ============================================================================
