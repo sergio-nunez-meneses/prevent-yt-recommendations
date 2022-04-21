@@ -4,10 +4,10 @@
 const relatedContents     = document.getElementsByTagName("ytd-watch-next-secondary-results-renderer")[0];
 const recommendations     = document.getElementById("primary").firstChild;
 const observerConfig      = {attributes: true, childList: true, subtree: true};
-const shuffleIntervalTime = 1250, shuffleTotalTime = 20000;
-let newNextVideoIsSet     = false;
+const shuffleIntervalTime = 1250, shuffleTotalTime = 10000;
+let newFirstVideoIsSet    = false;
 let spinnerContainerTop;
-let spinner, targetNode, newNextVideoThumbnail;
+let spinner, targetNode, newFirstVideo;
 let interval;
 let observer;
 
@@ -42,20 +42,17 @@ function shuffleRelatedVideosList(relatedContents) {
 				let containerLength        = relatedVideosContainer.length;
 
 				for (let i = 0; i < containerLength; i++) {
-					let randId        = Math.floor(Math.random() * containerLength);
-					let insertElement = relatedVideosContainer[randId];
-					let beforeElement = relatedContent.firstChild;
+					let randId              = Math.floor(Math.random() * containerLength);
+					let temporaryFirstVideo = relatedContent.firstChild;
+					newFirstVideo           = relatedVideosContainer[randId];
 
-					if (elementsAreNotLoadMoreSpinner(insertElement, beforeElement)) {
-						relatedContent.insertBefore(insertElement, beforeElement);
+					if (elementsAreNotLoadMoreSpinner(newFirstVideo, temporaryFirstVideo)) {
+						relatedContent.insertBefore(newFirstVideo, temporaryFirstVideo);
 
-						if (i === (containerLength - 1)) {
-							newNextVideoThumbnail = insertElement.children[0].children[0].children[0];
-							newNextVideoIsSet     = true;
-						}
+						newFirstVideoIsSet = true;
 					}
 					else {
-						let loadMoreSpinnerCoords = insertElement.getBoundingClientRect();
+						let loadMoreSpinnerCoords = newFirstVideo.getBoundingClientRect();
 
 						// Scroll to "load more" spinner
 						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
@@ -147,9 +144,9 @@ function createAndInsertSpinner(spinner) {
 
 function setNextVideoInformation(mutationsList, observer) {
 	for (const mutation of mutationsList) {
-		if (mutation.type === "attributes" && mutation.attributeName === "href" && newNextVideoIsSet) {
-			mutation.target.href = newNextVideoThumbnail.href;
-			newNextVideoIsSet    = false;
+		if (mutation.type === "attributes" && mutation.attributeName === "href" && newFirstVideoIsSet) {
+			mutation.target.href = newFirstVideo.href;
+			newFirstVideoIsSet   = false;
 		}
 	}
 }
