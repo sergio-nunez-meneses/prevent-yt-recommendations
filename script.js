@@ -49,10 +49,10 @@ function shuffleRelatedVideosList(relatedVideos) {
 		}
 		else {
 			let loadMoreSpinnerCoords = newFirstVideo.getBoundingClientRect(); // Scroll to "load more" spinner
-			window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
+			// window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
 
 			if (window.scrollY > 0) {
-				spinner.style.setProperty("top", "0");
+				// spinner.style.setProperty("top", "0");
 			}
 		}
 	}
@@ -61,9 +61,9 @@ function shuffleRelatedVideosList(relatedVideos) {
 		window.scroll(setScrollOptions(0, 0)); // Scroll back to top
 
 		if (window.scrollY === 0) {
-			spinner.style.setProperty("top", appendPxToInt(spinnerContainerTop));
+			// spinner.style.setProperty("top", appendPxToInt(spinnerContainerTop));
 		}
-		spinner.remove();
+		// spinner.remove();
 	}, 1000);
 }
 
@@ -172,15 +172,25 @@ else if (window.location.pathname === "/watch") {
 
 	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
 	const shuffleButton        = createShuffleButton(relatedVideosContainer);
+	const totalRelatedVideos   = relatedVideos.children.length;
 
+	currentVideoObserver.observe(currentVideo, observerConfig);
 	setSpinnerCss(relatedVideosContainer.getBoundingClientRect());
 
 	shuffleButton.addEventListener("click", function() {
-		spinner = createAndInsertSpinner(relatedVideosContainer);
+		// spinner = createAndInsertSpinner(relatedVideosContainer);
+		console.log("Total related video 1:", totalRelatedVideos);
+		console.log("Total related video 2:", relatedVideos.children.length);
+
 		shuffleRelatedVideosList(relatedVideos);
 
-		currentVideoObserver.observe(currentVideo, observerConfig);
-	})
+		// relatedVideosContainer.children[1].children["continuations"].click();
+		// console.log(relatedVideosContainer.children[1].children["continuations"]);
+
+		relatedVideos.children[relatedVideos.children.length - 1].children["button"].removeAttribute("hidden");
+		relatedVideos.children[relatedVideos.children.length - 1].children["button"].firstElementChild.firstElementChild.click();
+		console.log(relatedVideos.children[relatedVideos.children.length - 1].children["button"].firstElementChild.firstElementChild);
+	});
 }
 
 // ============================================================================
