@@ -18,10 +18,6 @@ function removeVideoRecommendations(recommendations) {
 	}
 }
 
-function videoIsPlaying(video) {
-	return video.readyState > 2 && video.currentTime > 0 && !video.paused && !video.ended;
-}
-
 function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
 	const tagName = "ytd-continuation-item-renderer";
 
@@ -103,10 +99,6 @@ if (window.location.pathname === "/") {
 	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
-	if (!videoIsPlaying(currentVideo)) {
-		document.querySelector(".ytp-large-play-button").click();
-	}
-
 	const shuffleButton = createShuffleButton(relatedVideosContainer);
 	shuffleButton.addEventListener("click", function() {
 		shuffleRelatedVideosList(relatedVideos);
