@@ -26,16 +26,16 @@ function shuffleRelatedVideosList(relatedContainer) {
 	const relatedVideosContainer = relatedContainer.children[2].children["items"];
 	const excludeElement         = "ytd-continuation-item-renderer";
 	let relatedVideos            = relatedVideosContainer.children;
-	let containerLength          = relatedVideos.length;
-	let loadMoreButton           = relatedVideos[containerLength - 1].children["button"];
+	let totalRelatedVideos       = relatedVideos.length;
+	let loadMoreButton           = relatedVideos[totalRelatedVideos - 1].children["button"];
 
 	if (loadMoreButton) {
 		loadMoreButton.removeAttribute("hidden");
 		loadMoreButton.firstElementChild.firstElementChild.click();
 	}
 
-	for (let i = 0; i < containerLength; i++) {
-		let randId              = Math.floor(Math.random() * containerLength);
+	for (let i = 0; i < totalRelatedVideos; i++) {
+		let randId              = Math.floor(Math.random() * totalRelatedVideos);
 		let temporaryFirstVideo = relatedVideosContainer.firstChild;
 		let newFirstVideo       = relatedVideos[randId];
 
