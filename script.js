@@ -50,56 +50,20 @@ function shuffleRelatedVideosList(relatedVideos) {
 	}
 }
 
-function setSpinnerCss(relatedContentsCoords) {
-	document.body.style.scrollBehavior = "smooth";
-
+function setButtonCss() {
 	const css     = document.createElement("style");
 	css.innerHTML = `
-	.spinner-container {
-		position: fixed;
-		z-index: 10;
-		top: ${appendPxToInt(relatedContentsCoords.top)};
-		left: ${appendPxToInt(relatedContentsCoords.left)};
-	  display: flex;
-	  flex-direction: column;
-	  width: ${appendPxToInt(relatedContentsCoords.width)};
-	  height: ${appendPxToInt(relatedContentsCoords.height)};
-	  background-color: rgba(0, 0, 0, 0.7);
-	}
-	.spinner-container .spinner {
-		align-self: center;
-		margin: 10rem 0 0 0;
-	  width: 64px;
-	  height: 128px;
-	  animation: rotate 2s linear infinite;
-	}
-	.spinner-container .spinner .path {
-	  stroke: #FF0000;
-	  stroke-linecap: round;
-	  animation: dash 1.5s ease-in-out infinite;
-	}
-	@keyframes rotate {
-	  100% {
-	    transform: rotate(360deg);
-	  }
-	}
-	@keyframes dash {
-	  0% {
-	    stroke-dasharray: 1, 150;
-	    stroke-dashoffset: 0;
-	  }
-	  50% {
-	    stroke-dasharray: 90, 150;
-	    stroke-dashoffset: -35;
-	  }
-	  100% {
-	    stroke-dasharray: 90, 150;
-	    stroke-dashoffset: -124;
-	  }
-	}
 	.shuffle-button {
 		margin: 0 0 1rem 0;
+		border: none;
+		border-radius: 2px;
+		padding: 1rem;
 		width: 100%;
+		background-color: #c00;
+		font-family: inherit;
+		text-transform: uppercase;
+		font-weight: bold;
+		color: white;
 	}`;
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
@@ -112,10 +76,6 @@ function createShuffleButton(relatedContents) {
 	relatedContents.insertBefore(button, relatedContents.firstElementChild);
 
 	return button;
-}
-
-function appendPxToInt(int) {
-	return int + "px";
 }
 
 function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
@@ -140,10 +100,10 @@ else if (window.location.pathname === "/watch") {
 	}
 
 	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-	const shuffleButton        = createShuffleButton(relatedVideosContainer);
-
 	currentVideoObserver.observe(currentVideo, observerConfig);
-	setSpinnerCss(relatedVideosContainer.getBoundingClientRect());
+
+	setButtonCss();
+	const shuffleButton = createShuffleButton(relatedVideosContainer);
 
 	shuffleButton.addEventListener("click", function() {
 		shuffleRelatedVideosList(relatedVideos);
