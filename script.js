@@ -4,7 +4,6 @@
 const relatedContainer = document.getElementById("related");
 const relatedVideos    = relatedContainer.children[1].children["items"];
 const recommendations  = document.getElementById("primary").firstChild;
-const currentVideo     = document.getElementsByTagName("video")[0];
 const observerConfig   = {attributes: true, childList: true, subtree: true};
 let alreadyShuffle     = false;
 let newFirstVideoLink  = "";
@@ -28,7 +27,8 @@ function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
 function shuffleRelatedVideosList(relatedVideos) {
 	if (!alreadyShuffle) {
 		const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-		currentVideoObserver.observe(currentVideo, observerConfig);
+		currentVideoObserver.observe(document.getElementsByTagName("video")[0],
+				observerConfig);
 	}
 
 	let relatedVideosContainer = relatedVideos.children;
