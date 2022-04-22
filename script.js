@@ -6,7 +6,6 @@ const recommendations  = document.getElementById("primary").firstChild;
 const observerConfig   = {attributes: true, childList: true, subtree: true};
 let alreadyShuffle     = false;
 let newFirstVideoLink  = "";
-let shuffleButton;
 
 // ============================================================================
 // Functions
@@ -96,14 +95,12 @@ if (window.location.pathname === "/") {
 	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
-	shuffleButton = createShuffleButton(relatedContainer);
+	const shuffleButton = createShuffleButton(relatedContainer);
+	shuffleButton.addEventListener("click", function() {
+		shuffleRelatedVideosList(relatedContainer);
+	});
 }
 
 // ============================================================================
 // EventListeners
 // ============================================================================
-if (shuffleButton) {
-	shuffleButton.addEventListener("click", function() {
-		shuffleRelatedVideosList(relatedContainer);
-	});
-}
