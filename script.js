@@ -36,6 +36,12 @@ function setScrollOptions(y, x) {
 function shuffleRelatedVideosList(relatedVideos) {
 	let relatedVideosContainer = relatedVideos.children;
 	let containerLength        = relatedVideosContainer.length;
+	let loadMoreButton         = relatedVideos.children[containerLength - 1].children["button"];
+
+	if (loadMoreButton) {
+		loadMoreButton.removeAttribute("hidden");
+		loadMoreButton.firstElementChild.firstElementChild.click();
+	}
 
 	for (let i = 0; i < containerLength; i++) {
 		let randId              = Math.floor(Math.random() * containerLength);
@@ -172,24 +178,13 @@ else if (window.location.pathname === "/watch") {
 
 	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
 	const shuffleButton        = createShuffleButton(relatedVideosContainer);
-	const totalRelatedVideos   = relatedVideos.children.length;
 
 	currentVideoObserver.observe(currentVideo, observerConfig);
 	setSpinnerCss(relatedVideosContainer.getBoundingClientRect());
 
 	shuffleButton.addEventListener("click", function() {
 		// spinner = createAndInsertSpinner(relatedVideosContainer);
-		console.log("Total related video 1:", totalRelatedVideos);
-		console.log("Total related video 2:", relatedVideos.children.length);
-
 		shuffleRelatedVideosList(relatedVideos);
-
-		// relatedVideosContainer.children[1].children["continuations"].click();
-		// console.log(relatedVideosContainer.children[1].children["continuations"]);
-
-		relatedVideos.children[relatedVideos.children.length - 1].children["button"].removeAttribute("hidden");
-		relatedVideos.children[relatedVideos.children.length - 1].children["button"].firstElementChild.firstElementChild.click();
-		console.log(relatedVideos.children[relatedVideos.children.length - 1].children["button"].firstElementChild.firstElementChild);
 	});
 }
 
