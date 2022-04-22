@@ -69,6 +69,8 @@ function setButtonCss() {
 }
 
 function createShuffleButton(relatedContents) {
+	setButtonCss();
+
 	const button     = document.createElement("button");
 	button.className = "shuffle-button";
 	button.innerText = "Shuffle";
@@ -102,7 +104,6 @@ else if (window.location.pathname === "/watch") {
 	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
 	currentVideoObserver.observe(currentVideo, observerConfig);
 
-	setButtonCss();
 	const shuffleButton = createShuffleButton(relatedVideosContainer);
 
 	shuffleButton.addEventListener("click", function() {
