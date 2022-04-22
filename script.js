@@ -1,13 +1,12 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContents   = document.getElementsByTagName(
-		"ytd-watch-next-secondary-results-renderer")[0];
-const recommendations   = document.getElementById("primary").firstChild;
-const currentVideo      = document.getElementsByTagName("video")[0];
-const observerConfig    = {attributes: true, childList: true, subtree: true};
-let spinnerContainerTop = 0;
-let newFirstVideoIsSet  = false;
+const relatedVideosContainer = document.getElementById("related");
+const relatedVideos          = relatedVideosContainer.children[1].children["items"];
+const recommendations        = document.getElementById("primary").firstChild;
+const currentVideo           = document.getElementsByTagName("video")[0];
+const observerConfig         = {attributes: true, childList: true, subtree: true};
+let spinnerContainerTop      = 0;
 let newFirstVideoLink;
 let spinner;
 
@@ -34,33 +33,26 @@ function setScrollOptions(y, x) {
 	return {top: y, left: x, behavior: 'smooth'};
 }
 
-function shuffleRelatedVideosList(relatedContents) {
-	if (relatedContents) {
-		for (let relatedContent of relatedContents.children) {
-			if (relatedContent.id === "items") {
-				let relatedVideosContainer = relatedContent.children;
-				let containerLength        = relatedVideosContainer.length;
+function shuffleRelatedVideosList(relatedVideos) {
+	let relatedVideosContainer = relatedVideos.children;
+	let containerLength        = relatedVideosContainer.length;
 
-				for (let i = 0; i < containerLength; i++) {
-					let randId              = Math.floor(Math.random() * containerLength);
-					let temporaryFirstVideo = relatedContent.firstChild;
-					let newFirstVideo       = relatedVideosContainer[randId];
+	for (let i = 0; i < containerLength; i++) {
+		let randId              = Math.floor(Math.random() * containerLength);
+		let temporaryFirstVideo = relatedVideos.firstChild;
+		let newFirstVideo       = relatedVideosContainer[randId];
 
-					if (elementsAreNotLoadMoreSpinner(newFirstVideo, temporaryFirstVideo)) {
-						relatedContent.insertBefore(newFirstVideo, temporaryFirstVideo);
+		if (elementsAreNotLoadMoreSpinner(newFirstVideo, temporaryFirstVideo)) {
+			relatedVideos.insertBefore(newFirstVideo, temporaryFirstVideo);
 
-						newFirstVideoLink  = newFirstVideo.children[0].children[0].children[0].href;
-						newFirstVideoIsSet = true;
-					}
-					else {
-						let loadMoreSpinnerCoords = newFirstVideo.getBoundingClientRect(); // Scroll to "load more" spinner
-						window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
+			newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
+		}
+		else {
+			let loadMoreSpinnerCoords = newFirstVideo.getBoundingClientRect(); // Scroll to "load more" spinner
+			window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
 
-						if (window.scrollY > 0) {
-							spinner.style.setProperty("top", "0");
-						}
-					}
-				}
+			if (window.scrollY > 0) {
+				spinner.style.setProperty("top", "0");
 			}
 		}
 	}
@@ -178,16 +170,15 @@ else if (window.location.pathname === "/watch") {
 		document.querySelector(".ytp-large-play-button").click();
 	}
 
-	const related              = document.getElementById("related");
 	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-	const shuffleButton        = createShuffleButton(related);
+	const shuffleButton        = createShuffleButton(relatedVideosContainer);
 
-	setSpinnerCss(related.getBoundingClientRect());
+	setSpinnerCss(relatedVideosContainer.getBoundingClientRect());
 
 	shuffleButton.addEventListener("click", function() {
-		spinner = createAndInsertSpinner(related);
+		spinner = createAndInsertSpinner(relatedVideosContainer);
+		shuffleRelatedVideosList(relatedVideos);
 
-		shuffleRelatedVideosList(relatedContents);
 		currentVideoObserver.observe(currentVideo, observerConfig);
 	})
 }
