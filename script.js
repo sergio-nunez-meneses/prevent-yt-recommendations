@@ -6,9 +6,7 @@ const relatedVideos          = relatedVideosContainer.children[1].children["item
 const recommendations        = document.getElementById("primary").firstChild;
 const currentVideo           = document.getElementsByTagName("video")[0];
 const observerConfig         = {attributes: true, childList: true, subtree: true};
-let spinnerContainerTop      = 0;
-let newFirstVideoLink;
-let spinner;
+let newFirstVideoLink        = "";
 
 // ============================================================================
 // Functions
@@ -27,10 +25,6 @@ function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
 	const tagName = "ytd-continuation-item-renderer";
 
 	return insertEl.tagName.toLowerCase() !== tagName && beforeEl.tagName.toLowerCase() !== tagName;
-}
-
-function setScrollOptions(y, x) {
-	return {top: y, left: x, behavior: 'smooth'};
 }
 
 function shuffleRelatedVideosList(relatedVideos) {
@@ -53,36 +47,18 @@ function shuffleRelatedVideosList(relatedVideos) {
 
 			newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
 		}
-		else {
-			let loadMoreSpinnerCoords = newFirstVideo.getBoundingClientRect(); // Scroll to "load more" spinner
-			// window.scroll(setScrollOptions(loadMoreSpinnerCoords.bottom, loadMoreSpinnerCoords.left));
-
-			if (window.scrollY > 0) {
-				// spinner.style.setProperty("top", "0");
-			}
-		}
 	}
-
-	setTimeout(function() {
-		window.scroll(setScrollOptions(0, 0)); // Scroll back to top
-
-		if (window.scrollY === 0) {
-			// spinner.style.setProperty("top", appendPxToInt(spinnerContainerTop));
-		}
-		// spinner.remove();
-	}, 1000);
 }
 
 function setSpinnerCss(relatedContentsCoords) {
 	document.body.style.scrollBehavior = "smooth";
-	spinnerContainerTop                = relatedContentsCoords.top;
 
 	const css     = document.createElement("style");
 	css.innerHTML = `
 	.spinner-container {
 		position: fixed;
 		z-index: 10;
-		top: ${appendPxToInt(spinnerContainerTop)};
+		top: ${appendPxToInt(relatedContentsCoords.top)};
 		left: ${appendPxToInt(relatedContentsCoords.left)};
 	  display: flex;
 	  flex-direction: column;
@@ -128,19 +104,6 @@ function setSpinnerCss(relatedContentsCoords) {
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
-function createAndInsertSpinner(relatedContents) {
-	spinner           = document.createElement("div");
-	spinner.className = "spinner-container";
-	spinner.innerHTML = `
-	<svg class="spinner" viewBox="0 0 50 50">
-		<circle class="path" fill="none" cx="25" cy="25" r="20" stroke-width="5"></circle>
-	</svg>`;
-
-	relatedContents.insertBefore(spinner, relatedContents.firstChild);
-
-	return spinner;
-}
-
 function createShuffleButton(relatedContents) {
 	const button     = document.createElement("button");
 	button.className = "shuffle-button";
@@ -183,7 +146,6 @@ else if (window.location.pathname === "/watch") {
 	setSpinnerCss(relatedVideosContainer.getBoundingClientRect());
 
 	shuffleButton.addEventListener("click", function() {
-		// spinner = createAndInsertSpinner(relatedVideosContainer);
 		shuffleRelatedVideosList(relatedVideos);
 	});
 }
