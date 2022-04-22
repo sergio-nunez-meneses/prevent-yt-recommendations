@@ -6,6 +6,7 @@ const relatedVideos          = relatedVideosContainer.children[1].children["item
 const recommendations        = document.getElementById("primary").firstChild;
 const currentVideo           = document.getElementsByTagName("video")[0];
 const observerConfig         = {attributes: true, childList: true, subtree: true};
+let alreadyShuffle           = false;
 let newFirstVideoLink        = "";
 
 // ============================================================================
@@ -28,6 +29,11 @@ function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
 }
 
 function shuffleRelatedVideosList(relatedVideos) {
+	if (!alreadyShuffle) {
+		const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
+		currentVideoObserver.observe(currentVideo, observerConfig);
+	}
+
 	let relatedVideosContainer = relatedVideos.children;
 	let containerLength        = relatedVideosContainer.length;
 	let loadMoreButton         = relatedVideos.children[containerLength - 1].children["button"];
@@ -44,10 +50,10 @@ function shuffleRelatedVideosList(relatedVideos) {
 
 		if (elementsAreNotLoadMoreSpinner(newFirstVideo, temporaryFirstVideo)) {
 			relatedVideos.insertBefore(newFirstVideo, temporaryFirstVideo);
-
 			newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
 		}
 	}
+	alreadyShuffle = true;
 }
 
 function setButtonCss() {
@@ -101,11 +107,7 @@ else if (window.location.pathname === "/watch") {
 		document.querySelector(".ytp-large-play-button").click();
 	}
 
-	const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-	currentVideoObserver.observe(currentVideo, observerConfig);
-
 	const shuffleButton = createShuffleButton(relatedVideosContainer);
-
 	shuffleButton.addEventListener("click", function() {
 		shuffleRelatedVideosList(relatedVideos);
 	});
