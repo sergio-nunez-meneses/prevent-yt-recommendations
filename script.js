@@ -19,7 +19,7 @@ function removeVideoRecommendations(recommendations) {
 }
 
 function videoIsPlaying(video) {
-	return video.readyState > 2 && !video.paused && !video.ended;
+	return video.readyState > 2 && video.currentTime > 0 && !video.paused && !video.ended;
 }
 
 function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
