@@ -2,7 +2,6 @@
 //  Variables
 // ============================================================================
 const relatedContainer = document.getElementById("related");
-const relatedVideos    = relatedContainer.children[1].children["items"];
 const recommendations  = document.getElementById("primary").firstChild;
 const observerConfig   = {attributes: true, childList: true, subtree: true};
 let alreadyShuffle     = false;
@@ -18,17 +17,18 @@ function removeVideoRecommendations(recommendations) {
 	}
 }
 
-function shuffleRelatedVideosList(relatedVideos) {
+function shuffleRelatedVideosList(relatedContainer) {
 	if (!alreadyShuffle) {
 		const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
 		currentVideoObserver.observe(document.getElementsByTagName("video")[0],
 				observerConfig);
 	}
 
-	const excludeElement       = "ytd-continuation-item-renderer";
-	let relatedVideosContainer = relatedVideos.children;
-	let containerLength        = relatedVideosContainer.length;
-	let loadMoreButton         = relatedVideos.children[containerLength - 1].children["button"];
+	const relatedVideosContainer = relatedContainer.children[2].children["items"];
+	const excludeElement         = "ytd-continuation-item-renderer";
+	let relatedVideos            = relatedVideosContainer.children;
+	let containerLength          = relatedVideos.length;
+	let loadMoreButton           = relatedVideos[containerLength - 1].children["button"];
 
 	if (loadMoreButton) {
 		loadMoreButton.removeAttribute("hidden");
@@ -37,12 +37,12 @@ function shuffleRelatedVideosList(relatedVideos) {
 
 	for (let i = 0; i < containerLength; i++) {
 		let randId              = Math.floor(Math.random() * containerLength);
-		let temporaryFirstVideo = relatedVideos.firstChild;
-		let newFirstVideo       = relatedVideosContainer[randId];
+		let temporaryFirstVideo = relatedVideosContainer.firstChild;
+		let newFirstVideo       = relatedVideos[randId];
 
 		if (newFirstVideo.tagName.toLowerCase() !== excludeElement
 				&& temporaryFirstVideo.tagName.toLowerCase() !== excludeElement) {
-			relatedVideos.insertBefore(newFirstVideo, temporaryFirstVideo);
+			relatedVideosContainer.insertBefore(newFirstVideo, temporaryFirstVideo);
 			newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
 		}
 	}
@@ -104,6 +104,6 @@ else if (window.location.pathname === "/watch") {
 // ============================================================================
 if (shuffleButton) {
 	shuffleButton.addEventListener("click", function() {
-		shuffleRelatedVideosList(relatedVideos);
+		shuffleRelatedVideosList(relatedContainer);
 	});
 }
