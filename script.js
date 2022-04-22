@@ -18,12 +18,6 @@ function removeVideoRecommendations(recommendations) {
 	}
 }
 
-function elementsAreNotLoadMoreSpinner(insertEl, beforeEl) {
-	const tagName = "ytd-continuation-item-renderer";
-
-	return insertEl.tagName.toLowerCase() !== tagName && beforeEl.tagName.toLowerCase() !== tagName;
-}
-
 function shuffleRelatedVideosList(relatedVideos) {
 	if (!alreadyShuffle) {
 		const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
@@ -31,6 +25,7 @@ function shuffleRelatedVideosList(relatedVideos) {
 				observerConfig);
 	}
 
+	const excludeElement       = "ytd-continuation-item-renderer";
 	let relatedVideosContainer = relatedVideos.children;
 	let containerLength        = relatedVideosContainer.length;
 	let loadMoreButton         = relatedVideos.children[containerLength - 1].children["button"];
@@ -45,7 +40,8 @@ function shuffleRelatedVideosList(relatedVideos) {
 		let temporaryFirstVideo = relatedVideos.firstChild;
 		let newFirstVideo       = relatedVideosContainer[randId];
 
-		if (elementsAreNotLoadMoreSpinner(newFirstVideo, temporaryFirstVideo)) {
+		if (newFirstVideo.tagName.toLowerCase() !== excludeElement
+				&& temporaryFirstVideo.tagName.toLowerCase() !== excludeElement) {
 			relatedVideos.insertBefore(newFirstVideo, temporaryFirstVideo);
 			newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
 		}
