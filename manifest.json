@@ -2,6 +2,7 @@
 	"manifest_version": 2,
 	"name": "Prevent YouTube Recommendations",
 	"version": "1.0",
+	"description": "Removes video recommendations from youtube.com/. Adds a button on top of related videos' column, to shuffle them on youtube.com/watch.",
 	"homepage_url" : "https://github.com/sergio-nunez-meneses/prevent-yt-recommendations",
 	"content_scripts": [
 		{
