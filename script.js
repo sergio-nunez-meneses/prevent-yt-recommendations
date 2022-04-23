@@ -1,9 +1,8 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContainer = document.getElementById("related");
 const recommendations  = document.getElementById("primary").firstChild;
-const observerConfig   = {attributes: true, childList: true, subtree: true};
+const relatedContainer = document.getElementById("related");
 let alreadyShuffle     = false;
 let newFirstVideoLink  = "";
 
@@ -19,6 +18,7 @@ function removeVideoRecommendations(recommendations) {
 function shuffleRelatedVideosList(relatedContainer) {
 	if (!alreadyShuffle) {
 		const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
+		const observerConfig       = {attributes: true, childList: true, subtree: true};
 		currentVideoObserver.observe(document.getElementsByTagName("video")[0],
 				observerConfig);
 	}
