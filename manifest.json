@@ -2,6 +2,7 @@
 	"manifest_version": 2,
 	"name": "Prevent YouTube Recommendations",
 	"version": "1.0",
+	"homepage_url" : "https://github.com/sergio-nunez-meneses/prevent-yt-recommendations",
 	"content_scripts": [
 		{
 			"matches": ["*://*.youtube.com/*"],
