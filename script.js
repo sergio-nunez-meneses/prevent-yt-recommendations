@@ -1,9 +1,8 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const relatedContainer = document.getElementById("related");
-let alreadyShuffle     = false;
-let newFirstVideoLink  = "";
+let alreadyShuffle    = false;
+let newFirstVideoLink = "";
 
 // ============================================================================
 // Functions
@@ -95,7 +94,9 @@ if (window.location.pathname === "/") {
 	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
-	const shuffleButton = createShuffleButton(relatedContainer);
+	let relatedContainer = document.getElementById("related");
+	let shuffleButton    = createShuffleButton(relatedContainer);
+
 	shuffleButton.addEventListener("click", function() {
 		shuffleRelatedVideosList(relatedContainer);
 	});
