@@ -89,17 +89,19 @@ function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
 // ============================================================================
 // Code to execute
 // ============================================================================
-if (window.location.pathname === "/") {
-	let recommendations = document.getElementById("primary").firstChild;
-	removeVideoRecommendations(recommendations);
-}
-else if (window.location.pathname === "/watch") {
-	let relatedContainer = document.getElementById("related");
-	let shuffleButton    = createShuffleButton(relatedContainer);
+if (window.location.hostname.includes("youtube")) {
+	if (window.location.pathname === "/") {
+		let recommendations = document.getElementById("primary").firstChild;
+		removeVideoRecommendations(recommendations);
+	}
+	else if (window.location.pathname === "/watch") {
+		let relatedContainer = document.getElementById("related");
+		let shuffleButton    = createShuffleButton(relatedContainer);
 
-	shuffleButton.addEventListener("click", function() {
-		shuffleRelatedVideosList(relatedContainer);
-	});
+		shuffleButton.addEventListener("click", function() {
+			shuffleRelatedVideosList(relatedContainer);
+		});
+	}
 }
 
 // ============================================================================
