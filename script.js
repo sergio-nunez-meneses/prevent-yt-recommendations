@@ -1,7 +1,6 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const recommendations  = document.getElementById("primary").firstChild;
 const relatedContainer = document.getElementById("related");
 let alreadyShuffle     = false;
 let newFirstVideoLink  = "";
@@ -92,6 +91,7 @@ function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
 // Code to execute
 // ============================================================================
 if (window.location.pathname === "/") {
+	let recommendations = document.getElementById("primary").firstChild;
 	removeVideoRecommendations(recommendations);
 }
 else if (window.location.pathname === "/watch") {
