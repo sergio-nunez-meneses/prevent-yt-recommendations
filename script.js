@@ -15,17 +15,17 @@ function removeVideoRecommendations(recommendations) {
 
 function shuffleRelatedVideosList(relatedContainer) {
 	if (!alreadyShuffle) {
-		const currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-		const observerConfig       = {attributes: true, childList: true, subtree: true};
+		let currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
+		let observerConfig       = {attributes: true, childList: true, subtree: true};
 		currentVideoObserver.observe(document.getElementsByTagName("video")[0],
 				observerConfig);
 	}
 
-	const relatedVideosContainer = relatedContainer.children[2].children["items"];
-	const excludeElement         = "ytd-continuation-item-renderer";
-	let relatedVideos            = relatedVideosContainer.children;
-	let totalRelatedVideos       = relatedVideos.length;
-	let loadMoreButton           = relatedVideos[totalRelatedVideos - 1].children["button"];
+	let relatedVideosContainer = relatedContainer.children[2].children["items"];
+	let excludeElement         = "ytd-continuation-item-renderer";
+	let relatedVideos          = relatedVideosContainer.children;
+	let totalRelatedVideos     = relatedVideos.length;
+	let loadMoreButton         = relatedVideos[totalRelatedVideos - 1].children["button"];
 
 	if (loadMoreButton) {
 		loadMoreButton.removeAttribute("hidden");
@@ -47,7 +47,7 @@ function shuffleRelatedVideosList(relatedContainer) {
 }
 
 function setButtonCss() {
-	const css     = document.createElement("style");
+	let css       = document.createElement("style");
 	css.innerHTML = `
 	.shuffle-button {
 		margin: 0 0 1rem 0;
@@ -67,7 +67,7 @@ function setButtonCss() {
 function createShuffleButton(relatedContents) {
 	setButtonCss();
 
-	const button     = document.createElement("button");
+	let button       = document.createElement("button");
 	button.className = "shuffle-button";
 	button.innerText = "Shuffle";
 
@@ -77,7 +77,7 @@ function createShuffleButton(relatedContents) {
 }
 
 function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
-	for (const mutation of mutationList) {
+	for (let mutation of mutationList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "style") {
 			if (mutation.target.ended) { // Current video ended
 				window.location.href = newFirstVideoLink;
