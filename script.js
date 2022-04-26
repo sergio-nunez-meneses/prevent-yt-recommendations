@@ -13,6 +13,8 @@ function removeVideoRecommendations(recommendations) {
 	}
 }
 
+// TODO: Split function shuffleRelatedVideosList into functions observeCurrentPlayedVideo,
+//  loadMoreRelatedVideos, and setNewFirstVideo
 function shuffleRelatedVideosList(relatedContainer) {
 	if (!alreadyShuffle) {
 		let currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
@@ -101,6 +103,32 @@ if (window.location.hostname.includes("youtube")) {
 		shuffleButton.addEventListener("click", function() {
 			shuffleRelatedVideosList(relatedContainer);
 		});
+
+		// TODO: Refactor
+		let relatedVideos = relatedContainer.children[2].children["items"].children;
+		let dragStart     = false; // prevent multiple console.logs()
+
+		for (const relatedVideo of relatedVideos) {
+			relatedVideo.addEventListener("drag", function(e) {
+				if (!dragStart) {
+					console.log("Dragged element:", e.target.closest(
+							".ytd-watch-next-secondary-results-renderer"));
+				}
+				dragStart = true;
+			});
+			relatedVideo.addEventListener("dragover", function(e) {
+				e.preventDefault(); // prevent default to allow drop
+			});
+			relatedVideo.addEventListener("drop", function(e) {
+				e.preventDefault(); // prevent default action (open as link for some elements)
+
+				if (dragStart) {
+					console.log("Dropped over:", e.target.closest(
+							".ytd-watch-next-secondary-results-renderer"));
+				}
+				dragStart = false;
+			});
+		}
 	}
 }
 
