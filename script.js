@@ -13,39 +13,72 @@ function removeVideoRecommendations(recommendations) {
 	}
 }
 
-// TODO: Split function shuffleRelatedVideosList into functions observeCurrentPlayedVideo,
-//  loadMoreRelatedVideos, and setNewFirstVideo
-function shuffleRelatedVideosList(relatedContainer) {
+function setCurrentVideoObserver() {
 	if (!alreadyShuffle) {
 		let currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
 		let observerConfig       = {attributes: true, childList: true, subtree: true};
 		currentVideoObserver.observe(document.getElementsByTagName("video")[0],
 				observerConfig);
 	}
+	alreadyShuffle = true;
+}
 
-	let relatedVideosContainer = relatedContainer.children[2].children["items"];
-	let excludeElement         = "ytd-continuation-item-renderer";
-	let relatedVideos          = relatedVideosContainer.children;
-	let totalRelatedVideos     = relatedVideos.length;
-	let loadMoreButton         = relatedVideos[totalRelatedVideos - 1].children["button"];
+function loadMoreRelatedVideos(relatedVideos) {
+	let totalRelatedVideos = relatedVideos.length;
+	let loadMoreButton     = relatedVideos[totalRelatedVideos - 1].children["button"];
 
 	if (loadMoreButton) {
 		loadMoreButton.removeAttribute("hidden");
 		loadMoreButton.firstElementChild.firstElementChild.click();
 	}
+}
+
+// TODO: Split function shuffleRelatedVideosList into functions setCurrentVideoObserver,
+//  loadMoreRelatedVideos, and setNewFirstVideo
+function shuffleRelatedVideosList(relatedVideosContainer) {
+	// if (!alreadyShuffle) {
+	// 	let currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
+	// 	let observerConfig       = {attributes: true, childList: true, subtree: true};
+	// 	currentVideoObserver.observe(document.getElementsByTagName("video")[0],
+	// 			observerConfig);
+	// }
+	//
+	// let relatedVideosContainer = relatedContainer.children[2].children["items"];
+	// let excludeElement         = "ytd-continuation-item-renderer";
+	let relatedVideos          = relatedVideosContainer.children;
+	let totalRelatedVideos     = relatedVideos.length;
+	// let loadMoreButton         = relatedVideos[totalRelatedVideos - 1].children["button"];
+	//
+	// if (loadMoreButton) {
+	// 	loadMoreButton.removeAttribute("hidden");
+	// 	loadMoreButton.firstElementChild.firstElementChild.click();
+	// }
 
 	for (let i = 0; i < totalRelatedVideos; i++) {
 		let randId              = Math.floor(Math.random() * totalRelatedVideos);
 		let temporaryFirstVideo = relatedVideosContainer.firstChild;
 		let newFirstVideo       = relatedVideos[randId];
 
-		if (newFirstVideo.tagName.toLowerCase() !== excludeElement
-				&& temporaryFirstVideo.tagName.toLowerCase() !== excludeElement) {
-			relatedVideosContainer.insertBefore(newFirstVideo, temporaryFirstVideo);
-			newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
-		}
+		setNewFirstVideo(relatedVideosContainer, newFirstVideo, temporaryFirstVideo);
+
+		// if (newFirstVideo.tagName.toLowerCase() !== excludeElement
+		// 		&& temporaryFirstVideo.tagName.toLowerCase() !== excludeElement) {
+		// 	relatedVideosContainer.insertBefore(newFirstVideo, temporaryFirstVideo);
+		// 	newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
+		// }
 	}
-	alreadyShuffle = true;
+	// alreadyShuffle = true;
+}
+
+function setNewFirstVideo(relatedVideosContainer, newFirstVideo, beforeVideoElement) {
+	let excludeElement = "ytd-continuation-item-renderer";
+
+	if (newFirstVideo.tagName.toLowerCase() !== excludeElement
+			&& beforeVideoElement.tagName.toLowerCase() !== excludeElement) {
+		relatedVideosContainer.insertBefore(newFirstVideo, beforeVideoElement);
+
+		newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
+	}
 }
 
 function setButtonCss() {
@@ -97,22 +130,30 @@ if (window.location.hostname.includes("youtube")) {
 		removeVideoRecommendations(recommendations);
 	}
 	else if (window.location.pathname === "/watch") {
-		let relatedContainer = document.getElementById("related");
-		let shuffleButton    = createShuffleButton(relatedContainer);
+		let relatedContainer       = document.getElementById("related");
+		let relatedVideosContainer = relatedContainer.children[1].children["items"];
+		let relatedVideos          = relatedVideosContainer.children;
+		let shuffleButton          = createShuffleButton(relatedContainer);
+		let dragStart     = false; // prevent multiple console.logs()
+		let newFirstVideo;
 
 		shuffleButton.addEventListener("click", function() {
-			shuffleRelatedVideosList(relatedContainer);
+			setCurrentVideoObserver();
+			loadMoreRelatedVideos(relatedVideos);
+			// shuffleRelatedVideosList(relatedContainer);
+			shuffleRelatedVideosList(relatedVideosContainer);
 		});
 
 		// TODO: Refactor
-		let relatedVideos = relatedContainer.children[2].children["items"];
-		let dragStart     = false; // prevent multiple console.logs()
-		let newElement;
 
-		for (const relatedVideo of relatedVideos.children) {
+		// let relatedVideos = relatedContainer.children[2].children["items"];
+		// let dragStart     = false; // prevent multiple console.logs()
+		// let newFirstVideo;
+
+		for (const relatedVideo of relatedVideos) {
 			relatedVideo.addEventListener("drag", function(e) {
 				if (!dragStart) {
-					newElement = e.target.closest(".ytd-watch-next-secondary-results-renderer");
+					newFirstVideo = e.target.closest(".ytd-watch-next-secondary-results-renderer");
 				}
 				dragStart = true;
 			});
@@ -123,8 +164,12 @@ if (window.location.hostname.includes("youtube")) {
 				e.preventDefault(); // prevent default action (open as link for some elements)
 
 				if (dragStart) {
-					let beforeElement = e.target.closest(".ytd-watch-next-secondary-results-renderer");
-					relatedVideos.insertBefore(newElement, beforeElement);
+					let firstVideo = e.target.closest(".ytd-watch-next-secondary-results-renderer");
+					// relatedVideosContainer.insertBefore(newFirstVideo, firstVideo);
+
+					setCurrentVideoObserver();
+					loadMoreRelatedVideos(relatedVideos);
+					setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo);
 				}
 				dragStart = false;
 			});
