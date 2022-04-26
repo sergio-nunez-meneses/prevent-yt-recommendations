@@ -105,14 +105,14 @@ if (window.location.hostname.includes("youtube")) {
 		});
 
 		// TODO: Refactor
-		let relatedVideos = relatedContainer.children[2].children["items"].children;
+		let relatedVideos = relatedContainer.children[2].children["items"];
 		let dragStart     = false; // prevent multiple console.logs()
+		let newElement;
 
-		for (const relatedVideo of relatedVideos) {
+		for (const relatedVideo of relatedVideos.children) {
 			relatedVideo.addEventListener("drag", function(e) {
 				if (!dragStart) {
-					console.log("Dragged element:", e.target.closest(
-							".ytd-watch-next-secondary-results-renderer"));
+					newElement = e.target.closest(".ytd-watch-next-secondary-results-renderer");
 				}
 				dragStart = true;
 			});
@@ -123,8 +123,8 @@ if (window.location.hostname.includes("youtube")) {
 				e.preventDefault(); // prevent default action (open as link for some elements)
 
 				if (dragStart) {
-					console.log("Dropped over:", e.target.closest(
-							".ytd-watch-next-secondary-results-renderer"));
+					let beforeElement = e.target.closest(".ytd-watch-next-secondary-results-renderer");
+					relatedVideos.insertBefore(newElement, beforeElement);
 				}
 				dragStart = false;
 			});
