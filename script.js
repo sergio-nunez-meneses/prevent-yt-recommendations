@@ -33,43 +33,6 @@ function loadMoreRelatedVideos(relatedVideos) {
 	}
 }
 
-// TODO: Split function shuffleRelatedVideosList into functions setCurrentVideoObserver,
-//  loadMoreRelatedVideos, and setNewFirstVideo
-function shuffleRelatedVideosList(relatedVideosContainer) {
-	// if (!alreadyShuffle) {
-	// 	let currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-	// 	let observerConfig       = {attributes: true, childList: true, subtree: true};
-	// 	currentVideoObserver.observe(document.getElementsByTagName("video")[0],
-	// 			observerConfig);
-	// }
-	//
-	// let relatedVideosContainer = relatedContainer.children[2].children["items"];
-	// let excludeElement         = "ytd-continuation-item-renderer";
-	let relatedVideos          = relatedVideosContainer.children;
-	let totalRelatedVideos     = relatedVideos.length;
-	// let loadMoreButton         = relatedVideos[totalRelatedVideos - 1].children["button"];
-	//
-	// if (loadMoreButton) {
-	// 	loadMoreButton.removeAttribute("hidden");
-	// 	loadMoreButton.firstElementChild.firstElementChild.click();
-	// }
-
-	for (let i = 0; i < totalRelatedVideos; i++) {
-		let randId              = Math.floor(Math.random() * totalRelatedVideos);
-		let temporaryFirstVideo = relatedVideosContainer.firstChild;
-		let newFirstVideo       = relatedVideos[randId];
-
-		setNewFirstVideo(relatedVideosContainer, newFirstVideo, temporaryFirstVideo);
-
-		// if (newFirstVideo.tagName.toLowerCase() !== excludeElement
-		// 		&& temporaryFirstVideo.tagName.toLowerCase() !== excludeElement) {
-		// 	relatedVideosContainer.insertBefore(newFirstVideo, temporaryFirstVideo);
-		// 	newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
-		// }
-	}
-	// alreadyShuffle = true;
-}
-
 function setNewFirstVideo(relatedVideosContainer, newFirstVideo, beforeVideoElement) {
 	let excludeElement = "ytd-continuation-item-renderer";
 
@@ -78,6 +41,19 @@ function setNewFirstVideo(relatedVideosContainer, newFirstVideo, beforeVideoElem
 		relatedVideosContainer.insertBefore(newFirstVideo, beforeVideoElement);
 
 		newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
+	}
+}
+
+function shuffleRelatedVideosList(relatedVideosContainer) {
+	let relatedVideos      = relatedVideosContainer.children;
+	let totalRelatedVideos = relatedVideos.length;
+
+	for (let i = 0; i < totalRelatedVideos; i++) {
+		let randId              = Math.floor(Math.random() * totalRelatedVideos);
+		let temporaryFirstVideo = relatedVideosContainer.firstChild;
+		let newFirstVideo       = relatedVideos[randId];
+
+		setNewFirstVideo(relatedVideosContainer, newFirstVideo, temporaryFirstVideo);
 	}
 }
 
@@ -134,21 +110,14 @@ if (window.location.hostname.includes("youtube")) {
 		let relatedVideosContainer = relatedContainer.children[1].children["items"];
 		let relatedVideos          = relatedVideosContainer.children;
 		let shuffleButton          = createShuffleButton(relatedContainer);
-		let dragStart     = false; // prevent multiple console.logs()
+		let dragStart              = false; // prevent triggering event multiple times
 		let newFirstVideo;
 
 		shuffleButton.addEventListener("click", function() {
 			setCurrentVideoObserver();
 			loadMoreRelatedVideos(relatedVideos);
-			// shuffleRelatedVideosList(relatedContainer);
 			shuffleRelatedVideosList(relatedVideosContainer);
 		});
-
-		// TODO: Refactor
-
-		// let relatedVideos = relatedContainer.children[2].children["items"];
-		// let dragStart     = false; // prevent multiple console.logs()
-		// let newFirstVideo;
 
 		for (const relatedVideo of relatedVideos) {
 			relatedVideo.addEventListener("drag", function(e) {
@@ -165,7 +134,6 @@ if (window.location.hostname.includes("youtube")) {
 
 				if (dragStart) {
 					let firstVideo = e.target.closest(".ytd-watch-next-secondary-results-renderer");
-					// relatedVideosContainer.insertBefore(newFirstVideo, firstVideo);
 
 					setCurrentVideoObserver();
 					loadMoreRelatedVideos(relatedVideos);
