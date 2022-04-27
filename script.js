@@ -57,6 +57,16 @@ function shuffleRelatedVideosList(relatedVideosContainer) {
 	}
 }
 
+function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
+	for (let mutation of mutationList) {
+		if (mutation.type === "attributes" && mutation.attributeName === "style") {
+			if (mutation.target.ended) { // Current video ended
+				window.location.href = newFirstVideoLink;
+			}
+		}
+	}
+}
+
 function setButtonCss() {
 	let css       = document.createElement("style");
 	css.innerHTML = `
@@ -87,16 +97,6 @@ function createShuffleButton(relatedContents) {
 	return button;
 }
 
-function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
-	for (let mutation of mutationList) {
-		if (mutation.type === "attributes" && mutation.attributeName === "style") {
-			if (mutation.target.ended) { // Current video ended
-				window.location.href = newFirstVideoLink;
-			}
-		}
-	}
-}
-
 // ============================================================================
 // Code to execute
 // ============================================================================
@@ -106,6 +106,7 @@ if (window.location.hostname.includes("youtube")) {
 		removeVideoRecommendations(recommendations);
 	}
 	else if (window.location.pathname === "/watch") {
+		const closestParentTagName = ".ytd-watch-next-secondary-results-renderer";
 		let relatedContainer       = document.getElementById("related");
 		let relatedVideosContainer = relatedContainer.children[1].children["items"];
 		let relatedVideos          = relatedVideosContainer.children;
@@ -122,7 +123,7 @@ if (window.location.hostname.includes("youtube")) {
 		for (const relatedVideo of relatedVideos) {
 			relatedVideo.addEventListener("drag", function(e) {
 				if (!dragStart) {
-					newFirstVideo = e.target.closest(".ytd-watch-next-secondary-results-renderer");
+					newFirstVideo = e.target.closest(closestParentTagName);
 				}
 				dragStart = true;
 			});
@@ -133,7 +134,7 @@ if (window.location.hostname.includes("youtube")) {
 				e.preventDefault(); // prevent default action (open as link for some elements)
 
 				if (dragStart) {
-					let firstVideo = e.target.closest(".ytd-watch-next-secondary-results-renderer");
+					let firstVideo = e.target.closest(closestParentTagName);
 
 					setCurrentVideoObserver();
 					loadMoreRelatedVideos(relatedVideos);
