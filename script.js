@@ -2,8 +2,7 @@
 //  Variables
 // ============================================================================
 const observerConfig = {attributes: true, childList: true, subtree: true};
-const appTagName     = "ytd-watch-flexy";
-const app            = document.getElementsByTagName(appTagName)[0];
+let app              = document.getElementsByTagName("ytd-app")[0];
 // let alreadyShuffle    = false;
 // let newFirstVideoLink = "";
 
@@ -17,8 +16,13 @@ function init() {
 
 function checkCurrentAppPath(mutationsList, appObserver) {
 	for (let mutation of mutationsList) {
-		if (mutation.target.tagName.toLowerCase() === appTagName && mutation.type === "attributes"
-				&& mutation.attributeName === "hidden") {
+		if (mutation.type === "childList") {
+			if (mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer") {
+				mutation.target.remove();
+			}
+		}
+		else if (mutation.target.tagName.toLowerCase() === "ytd-watch-flexy" &&
+				mutation.type === "attributes" && mutation.attributeName === "hidden") {
 			if (mutation.target.hasAttribute("hidden")) {
 				console.log("App is hidden");
 			}
@@ -29,12 +33,6 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 	}
 }
 
-// function removeVideoRecommendations(recommendations) {
-// 	if (recommendations && recommendations.tagName.toLowerCase() === "ytd-rich-grid-renderer") {
-// 		recommendations.remove();
-// 	}
-// }
-//
 // function setCurrentVideoObserver() {
 // 	if (!alreadyShuffle) {
 // 		let currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
