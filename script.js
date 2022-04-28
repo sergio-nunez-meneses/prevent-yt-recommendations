@@ -18,11 +18,17 @@ function init() {
 function checkCurrentAppPath(mutationsList, appObserver) {
 	for (let mutation of mutationsList) {
 		if (mutation.type === "childList") {
+			// video recommendations on "/"
 			if (mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer") {
 				mutation.target.remove();
 			}
+			// related videos' list on "/watch"
 			else if (mutation.target.id === "contents" && mutation.target.childElementCount > 1) {
 				relatedVideosContainer = mutation.target;
+			}
+			// comments on "/watch"
+			else if (mutation.target.id === "sections") {
+				mutation.target.remove();
 			}
 		}
 		else if (mutation.target.tagName.toLowerCase() === "ytd-watch-flexy" &&
