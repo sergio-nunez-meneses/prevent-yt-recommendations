@@ -4,6 +4,7 @@
 const observerConfig  = {attributes: true, childList: true, subtree: true};
 let app               = document.getElementsByTagName("ytd-app")[0];
 let isShuffled        = false;
+let shuffleButton;
 // let newFirstVideoLink = "";
 
 // ============================================================================
@@ -25,9 +26,16 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 				mutation.type === "attributes" && mutation.attributeName === "hidden") {
 			if (mutation.target.hasAttribute("hidden")) {
 				console.log("App is hidden");
+
+				if (shuffleButton) {
+					shuffleButton.remove();
+				}
 			}
 			else {
 				console.log("App is not hidden");
+
+				let relatedContainer = document.getElementById("related");
+				shuffleButton        = createShuffleButton(relatedContainer);
 			}
 		}
 	}
@@ -85,41 +93,40 @@ function redirectToNewFirstVideo(mutationList, videoStreamObserver) {
 	}
 }
 
-// function setButtonCss() {
-// 	let css       = document.createElement("style");
-// 	css.innerHTML = `
-// 	.shuffle-button {
-// 		margin: 0 0 1rem 0;
-// 		border: none;
-// 		border-radius: 2px;
-// 		padding: 1rem;
-// 		width: 100%;
-// 		background-color: #c00;
-// 		font-family: inherit;
-// 		text-transform: uppercase;
-// 		font-weight: bold;
-// 		color: white;
-// 	}`;
-// 	document.getElementsByTagName('head')[0].appendChild(css);
-// }
-//
-// function createShuffleButton(relatedContents) {
-// 	setButtonCss();
-//
-// 	let button       = document.createElement("button");
-// 	button.className = "shuffle-button";
-// 	button.innerText = "Shuffle";
-//
-// 	relatedContents.insertBefore(button, relatedContents.firstElementChild);
-//
-// 	return button;
-// }
-//
+function setShuffleButtonCss() {
+	let css       = document.createElement("style");
+	css.innerHTML = `
+	.shuffle-button {
+		margin: 0 0 1rem 0;
+		border: none;
+		border-radius: 2px;
+		padding: 1rem;
+		width: 100%;
+		background-color: #c00;
+		font-family: inherit;
+		text-transform: uppercase;
+		font-weight: bold;
+		color: white;
+	}`;
+	document.getElementsByTagName('head')[0].appendChild(css);
+}
+
+function createShuffleButton(relatedContainer) {
+	let button       = document.createElement("button");
+	button.className = "shuffle-button";
+	button.innerText = "Shuffle";
+
+	relatedContainer.insertBefore(button, relatedContainer.firstElementChild);
+
+	return button;
+}
+
 // ============================================================================
 // Code to execute
 // ============================================================================
 if (window.location.hostname.includes("youtube")) {
 	init();
+	setShuffleButtonCss();
 }
 
 // 	else if (window.location.pathname === "/watch") {
