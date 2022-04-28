@@ -1,11 +1,10 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const observerConfig  = {attributes: true, childList: true, subtree: true};
-let app               = document.getElementsByTagName("ytd-app")[0];
-let isShuffled        = false;
-let shuffleButton;
-// let newFirstVideoLink = "";
+const observerConfig = {attributes: true, childList: true, subtree: true};
+let app              = document.getElementsByTagName("ytd-app")[0];
+let isShuffled       = false;
+let shuffleButton, newFirstVideoUrl;
 
 // ============================================================================
 // Functions
@@ -36,6 +35,10 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 
 				let relatedContainer = document.getElementById("related");
 				shuffleButton        = createShuffleButton(relatedContainer);
+
+				shuffleButton.addEventListener("click", function() {
+					shuffleRelatedVideosList(relatedContainer);
+				})
 			}
 		}
 	}
@@ -58,36 +61,39 @@ function setCurrentVideoObserver() {
 // 		loadMoreButton.firstElementChild.firstElementChild.click();
 // 	}
 // }
-//
-// function setNewFirstVideo(relatedVideosContainer, newFirstVideo, beforeVideoElement) {
-// 	let excludeElement = "ytd-continuation-item-renderer";
-//
-// 	if (newFirstVideo.tagName.toLowerCase() !== excludeElement
-// 			&& beforeVideoElement.tagName.toLowerCase() !== excludeElement) {
-// 		relatedVideosContainer.insertBefore(newFirstVideo, beforeVideoElement);
-//
-// 		newFirstVideoLink = newFirstVideo.children[0].children[0].children[0].href;
-// 	}
-// }
-//
-// function shuffleRelatedVideosList(relatedVideosContainer) {
-// 	let relatedVideos      = relatedVideosContainer.children;
-// 	let totalRelatedVideos = relatedVideos.length;
-//
-// 	for (let i = 0; i < totalRelatedVideos; i++) {
-// 		let randId              = Math.floor(Math.random() * totalRelatedVideos);
-// 		let temporaryFirstVideo = relatedVideosContainer.firstChild;
-// 		let newFirstVideo       = relatedVideos[randId];
-//
-// 		setNewFirstVideo(relatedVideosContainer, newFirstVideo, temporaryFirstVideo);
-// 	}
-// }
+
+function setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo) {
+	let loadMoreSpinnerTagName = "ytd-continuation-item-renderer";
+
+	if (newFirstVideo.tagName.toLowerCase() !== loadMoreSpinnerTagName
+			&& firstVideo.tagName.toLowerCase() !== loadMoreSpinnerTagName) {
+		relatedVideosContainer.insertBefore(newFirstVideo, firstVideo);
+
+		newFirstVideoUrl = newFirstVideo.children[0].children[0].children[0].href;
+	}
+}
+
+function shuffleRelatedVideosList(relatedContainer) {
+	setCurrentVideoObserver();
+
+	let relatedVideosContainer = relatedContainer.children[2].children["items"];
+	let relatedVideos          = relatedVideosContainer.children;
+	let totalRelatedVideos     = relatedVideos.length;
+
+	for (let i = 0; i < totalRelatedVideos; i++) {
+		let randId        = Math.floor(Math.random() * totalRelatedVideos);
+		let firstVideo    = relatedVideosContainer.firstChild;
+		let newFirstVideo = relatedVideos[randId];
+
+		setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo);
+	}
+}
 
 function redirectToNewFirstVideo(mutationList, videoStreamObserver) {
 	for (let mutation of mutationList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "style") {
 			if (mutation.target.ended) {
-				// window.location.href = newFirstVideoLink;
+				window.location.href = newFirstVideoUrl;
 			}
 		}
 	}
@@ -134,15 +140,8 @@ if (window.location.hostname.includes("youtube")) {
 // 		let relatedContainer       = document.getElementById("related");
 // 		let relatedVideosContainer = relatedContainer.children[1].children["items"];
 // 		let relatedVideos          = relatedVideosContainer.children;
-// 		let shuffleButton          = createShuffleButton(relatedContainer);
 // 		let dragStart              = false; // prevent triggering event multiple times
 // 		let newFirstVideo;
-//
-// 		shuffleButton.addEventListener("click", function() {
-// 			setCurrentVideoObserver();
-// 			loadMoreRelatedVideos(relatedVideos);
-// 			shuffleRelatedVideosList(relatedVideosContainer);
-// 		});
 //
 // 		for (const relatedVideo of relatedVideos) {
 // 			relatedVideo.addEventListener("drag", function(e) {
