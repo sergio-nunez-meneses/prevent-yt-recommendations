@@ -33,12 +33,7 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			else {
 				console.log("App is not hidden");
 
-				let relatedContainer = document.getElementById("related");
-				shuffleButton        = createShuffleButton(relatedContainer);
-
-				shuffleButton.addEventListener("click", function() {
-					shuffleRelatedVideosList();
-				})
+				createShuffleButton();
 			}
 		}
 	}
@@ -117,14 +112,16 @@ function setShuffleButtonCss() {
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
-function createShuffleButton(relatedContainer) {
-	let button       = document.createElement("button");
-	button.className = "shuffle-button";
-	button.innerText = "Shuffle";
+function createShuffleButton() {
+	let relatedContainer = document.getElementById("related");
+	let button           = document.createElement("button");
+	button.className     = "shuffle-button";
+	button.innerText     = "Shuffle";
 
 	relatedContainer.insertBefore(button, relatedContainer.firstElementChild);
 
-	return button;
+	button.onclick = shuffleRelatedVideosList;
+	shuffleButton  = button;
 }
 
 // ============================================================================
