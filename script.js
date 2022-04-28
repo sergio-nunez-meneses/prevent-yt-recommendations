@@ -1,9 +1,9 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const observerConfig = {attributes: true, childList: true, subtree: true};
-let app              = document.getElementsByTagName("ytd-app")[0];
-// let alreadyShuffle    = false;
+const observerConfig  = {attributes: true, childList: true, subtree: true};
+let app               = document.getElementsByTagName("ytd-app")[0];
+let isShuffled        = false;
 // let newFirstVideoLink = "";
 
 // ============================================================================
@@ -33,16 +33,14 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 	}
 }
 
-// function setCurrentVideoObserver() {
-// 	if (!alreadyShuffle) {
-// 		let currentVideoObserver = new MutationObserver(redirectToNewFirstVideo);
-// 		let observerConfig       = {attributes: true, childList: true, subtree: true};
-// 		currentVideoObserver.observe(document.getElementsByTagName("video")[0],
-// 				observerConfig);
-// 	}
-// 	alreadyShuffle = true;
-// }
-//
+function setCurrentVideoObserver() {
+	if (!isShuffled) {
+		let videoStreamObserver = new MutationObserver(redirectToNewFirstVideo);
+		videoStreamObserver.observe(document.getElementsByTagName("video")[0], observerConfig);
+	}
+	isShuffled = true;
+}
+
 // function loadMoreRelatedVideos(relatedVideos) {
 // 	let totalRelatedVideos = relatedVideos.length;
 // 	let loadMoreButton     = relatedVideos[totalRelatedVideos - 1].children["button"];
@@ -76,17 +74,17 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 // 		setNewFirstVideo(relatedVideosContainer, newFirstVideo, temporaryFirstVideo);
 // 	}
 // }
-//
-// function redirectToNewFirstVideo(mutationList, currentVideoObserver) {
-// 	for (let mutation of mutationList) {
-// 		if (mutation.type === "attributes" && mutation.attributeName === "style") {
-// 			if (mutation.target.ended) { // Current video ended
-// 				window.location.href = newFirstVideoLink;
-// 			}
-// 		}
-// 	}
-// }
-//
+
+function redirectToNewFirstVideo(mutationList, videoStreamObserver) {
+	for (let mutation of mutationList) {
+		if (mutation.type === "attributes" && mutation.attributeName === "style") {
+			if (mutation.target.ended) {
+				// window.location.href = newFirstVideoLink;
+			}
+		}
+	}
+}
+
 // function setButtonCss() {
 // 	let css       = document.createElement("style");
 // 	css.innerHTML = `
