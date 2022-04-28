@@ -124,11 +124,6 @@ if (window.location.hostname.includes("youtube")) {
 	init();
 }
 
-// if (window.location.hostname.includes("youtube")) {
-// 	if (window.location.pathname === "/") {
-// 		let recommendations = document.getElementById("primary").firstChild;
-// 		removeVideoRecommendations(recommendations);
-// 	}
 // 	else if (window.location.pathname === "/watch") {
 // 		const closestParentTagName = ".ytd-watch-next-secondary-results-renderer";
 // 		let relatedContainer       = document.getElementById("related");
