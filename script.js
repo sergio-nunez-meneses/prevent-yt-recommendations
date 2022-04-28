@@ -22,13 +22,17 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			if (mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer") {
 				mutation.target.remove();
 			}
-			// related videos' list on "/watch"
-			else if (mutation.target.id === "contents" && mutation.target.childElementCount > 1) {
-				relatedVideosContainer = mutation.target;
+			// recommendation filters when logged in
+			else if (mutation.target.tagName.toLowerCase() === "yt-related-chip-cloud-renderer") {
+				mutation.target.remove();
 			}
 			// comments on "/watch"
 			else if (mutation.target.id === "sections") {
 				mutation.target.remove();
+			}
+			// related videos' list on "/watch"
+			else if (mutation.target.id === "contents" && mutation.target.childElementCount > 1) {
+				relatedVideosContainer = mutation.target;
 			}
 		}
 		else if (mutation.target.tagName.toLowerCase() === "ytd-watch-flexy" &&
