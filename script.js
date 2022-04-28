@@ -4,7 +4,8 @@
 const observerConfig = {attributes: true, childList: true, subtree: true};
 let app              = document.getElementsByTagName("ytd-app")[0];
 let isShuffled       = false;
-let shuffleButton, newFirstVideoUrl;
+let newFirstVideoUrl = "";
+let shuffleButton, relatedVideosContainer;
 
 // ============================================================================
 // Functions
@@ -20,15 +21,14 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			if (mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer") {
 				mutation.target.remove();
 			}
+			else if (mutation.target.id === "contents" && mutation.target.childElementCount > 1) {
+				relatedVideosContainer = mutation.target;
+			}
 		}
 		else if (mutation.target.tagName.toLowerCase() === "ytd-watch-flexy" &&
 				mutation.type === "attributes" && mutation.attributeName === "hidden") {
 			if (mutation.target.hasAttribute("hidden")) {
 				console.log("App is hidden");
-
-				if (shuffleButton) {
-					shuffleButton.remove();
-				}
 			}
 			else {
 				console.log("App is not hidden");
@@ -37,7 +37,7 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 				shuffleButton        = createShuffleButton(relatedContainer);
 
 				shuffleButton.addEventListener("click", function() {
-					shuffleRelatedVideosList(relatedContainer);
+					shuffleRelatedVideosList();
 				})
 			}
 		}
@@ -73,12 +73,11 @@ function setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo) {
 	}
 }
 
-function shuffleRelatedVideosList(relatedContainer) {
+function shuffleRelatedVideosList() {
 	setCurrentVideoObserver();
 
-	let relatedVideosContainer = relatedContainer.children[2].children["items"];
-	let relatedVideos          = relatedVideosContainer.children;
-	let totalRelatedVideos     = relatedVideos.length;
+	let relatedVideos      = relatedVideosContainer.children;
+	let totalRelatedVideos = relatedVideos.length;
 
 	for (let i = 0; i < totalRelatedVideos; i++) {
 		let randId        = Math.floor(Math.random() * totalRelatedVideos);
