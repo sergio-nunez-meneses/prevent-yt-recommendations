@@ -52,29 +52,19 @@ function setCurrentVideoObserver() {
 	isShuffled = true;
 }
 
-// function loadMoreRelatedVideos(relatedVideos) {
-// 	let totalRelatedVideos = relatedVideos.length;
-// 	let loadMoreButton     = relatedVideos[totalRelatedVideos - 1].children["button"];
-//
-// 	if (loadMoreButton) {
-// 		loadMoreButton.removeAttribute("hidden");
-// 		loadMoreButton.firstElementChild.firstElementChild.click();
-// 	}
-// }
+function loadMoreRelatedVideos() {
+	let relatedVideos  = relatedVideosContainer.children;
+	let loadMoreButton = relatedVideos[relatedVideos.length - 1].children["button"];
 
-function setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo) {
-	let loadMoreSpinnerTagName = "ytd-continuation-item-renderer";
-
-	if (newFirstVideo.tagName.toLowerCase() !== loadMoreSpinnerTagName
-			&& firstVideo.tagName.toLowerCase() !== loadMoreSpinnerTagName) {
-		relatedVideosContainer.insertBefore(newFirstVideo, firstVideo);
-
-		newFirstVideoUrl = newFirstVideo.children[0].children[0].children[0].href;
+	if (loadMoreButton) {
+		loadMoreButton.removeAttribute("hidden");
+		loadMoreButton.firstElementChild.firstElementChild.click();
 	}
 }
 
 function shuffleRelatedVideosList() {
 	setCurrentVideoObserver();
+	loadMoreRelatedVideos();
 
 	let relatedVideos      = relatedVideosContainer.children;
 	let totalRelatedVideos = relatedVideos.length;
@@ -85,6 +75,17 @@ function shuffleRelatedVideosList() {
 		let newFirstVideo = relatedVideos[randId];
 
 		setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo);
+	}
+}
+
+function setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo) {
+	let loadMoreSpinnerTagName = "ytd-continuation-item-renderer";
+
+	if (newFirstVideo.tagName.toLowerCase() !== loadMoreSpinnerTagName
+			&& firstVideo.tagName.toLowerCase() !== loadMoreSpinnerTagName) {
+		relatedVideosContainer.insertBefore(newFirstVideo, firstVideo);
+
+		newFirstVideoUrl = newFirstVideo.children[0].children[0].children[0].href;
 	}
 }
 
@@ -130,6 +131,8 @@ function createShuffleButton(relatedContainer) {
 // Code to execute
 // ============================================================================
 if (window.location.hostname.includes("youtube")) {
+	console.log(window.location.pathname); // TODO: init() based also on pathname
+
 	init();
 	setShuffleButtonCss();
 }
