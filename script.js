@@ -24,7 +24,7 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 					|| mutation.target.id === "sections") { // Comments on "/watch"
 				mutation.target.remove();
 			}
-			// TODO: To test
+			// TODO: Doesn't work
 			// Video pause overlay on "/watch"
 			if (mutation.target.tagName.toLowerCase() === "tp-yt-iron-overlay-backdrop") {
 				console.log(mutation.target, document.getElementById("confirm-button"));
@@ -33,15 +33,6 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			// related videos' list on "/watch"
 			if (mutation.target.firstElementChild.tagName.toLowerCase() === "ytd-compact-video-renderer") {
 				relatedVideosContainer = mutation.target;
-			}
-		}
-		else if (mutation.target.tagName.toLowerCase() === "ytd-watch-flexy" &&
-				mutation.type === "attributes" && mutation.attributeName === "hidden") {
-			if (mutation.target.hasAttribute("hidden")) {
-				console.log("App is hidden");
-			}
-			else {
-				console.log("App is not hidden");
 
 				createShuffleButton();
 			}
@@ -124,12 +115,12 @@ function setShuffleButtonCss() {
 
 function createShuffleButton() {
 	if (!shuffleButton) {
-		let relatedContainer = document.getElementById("related");
-		let button           = document.createElement("button");
-		button.className     = "shuffle-button";
-		button.innerText     = "Shuffle";
+		let secondColumn = document.getElementById("secondary");
+		let button       = document.createElement("button");
+		button.className = "shuffle-button";
+		button.innerText = "Shuffle";
 
-		relatedContainer.insertBefore(button, relatedContainer.firstElementChild);
+		secondColumn.insertBefore(button, secondColumn.firstElementChild);
 
 		button.onclick = shuffleRelatedVideosList;
 		shuffleButton  = button;
@@ -140,8 +131,6 @@ function createShuffleButton() {
 // Code to execute
 // ============================================================================
 if (window.location.hostname.includes("youtube")) {
-	console.log(window.location.pathname); // TODO: init() based also on pathname
-
 	init();
 	setShuffleButtonCss();
 }
