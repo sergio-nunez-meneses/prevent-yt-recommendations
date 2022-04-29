@@ -111,7 +111,13 @@ function setShuffleButtonCss() {
 		text-transform: uppercase;
 		font-weight: bold;
 		color: white;
-	}`;
+		transition: background-color 0.3s;
+	}
+	.shuffle-button:hover {
+		background-color: #990412;
+		cursor: pointer;
+	}
+	`;
 	document.getElementsByTagName('head')[0].appendChild(css);
 }
 
