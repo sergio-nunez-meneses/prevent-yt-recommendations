@@ -18,11 +18,17 @@ function init() {
 function checkCurrentAppPath(mutationsList, appObserver) {
 	for (let mutation of mutationsList) {
 		if (mutation.type === "childList") {
-			if (mutation.target.tagName.toLowerCase() === "ytd-two-column-browse-results-renderer" // video recommendations on "/"
-					|| mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer" // video recommendations on "/"
-					|| mutation.target.tagName.toLowerCase() === "yt-related-chip-cloud-renderer" // recommendation filters when logged in
-					|| mutation.target.id === "sections") { // comments on "/watch"
+			if (mutation.target.tagName.toLowerCase() === "ytd-two-column-browse-results-renderer" // Video recommendations on "/"
+					|| mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer"
+					|| mutation.target.tagName.toLowerCase() === "yt-related-chip-cloud-renderer" // Recommendation filters on logged in
+					|| mutation.target.id === "sections") { // Comments on "/watch"
 				mutation.target.remove();
+			}
+			// TODO: To test
+			// Video pause overlay on "/watch"
+			if (mutation.target.tagName.toLowerCase() === "tp-yt-iron-overlay-backdrop") {
+				console.log(mutation.target, document.getElementById("confirm-button"));
+				document.getElementById("confirm-button").click();
 			}
 			// related videos' list on "/watch"
 			if (mutation.target.firstElementChild.tagName.toLowerCase() === "ytd-compact-video-renderer") {
