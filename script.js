@@ -11,6 +11,8 @@ let shuffleButton, relatedVideosContainer;
 // Functions
 // ============================================================================
 function init() {
+	setShuffleButtonCss();
+
 	let appObserver = new MutationObserver(checkCurrentAppPath);
 	appObserver.observe(app, observerConfig);
 }
@@ -132,7 +134,6 @@ function createShuffleButton() {
 // ============================================================================
 if (window.location.hostname.includes("youtube")) {
 	init();
-	setShuffleButtonCss();
 }
 
 // 	else if (window.location.pathname === "/watch") {
