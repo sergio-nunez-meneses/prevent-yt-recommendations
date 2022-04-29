@@ -142,40 +142,6 @@ if (window.location.hostname.includes("youtube")) {
 	init();
 }
 
-// 	else if (window.location.pathname === "/watch") {
-// 		const closestParentTagName = ".ytd-watch-next-secondary-results-renderer";
-// 		let relatedContainer       = document.getElementById("related");
-// 		let relatedVideosContainer = relatedContainer.children[1].children["items"];
-// 		let relatedVideos          = relatedVideosContainer.children;
-// 		let dragStart              = false; // prevent triggering event multiple times
-// 		let newFirstVideo;
-//
-// 		for (const relatedVideo of relatedVideos) {
-// 			relatedVideo.addEventListener("drag", function(e) {
-// 				if (!dragStart) {
-// 					newFirstVideo = e.target.closest(closestParentTagName);
-// 				}
-// 				dragStart = true;
-// 			});
-// 			relatedVideo.addEventListener("dragover", function(e) {
-// 				e.preventDefault(); // prevent default to allow drop
-// 			});
-// 			relatedVideo.addEventListener("drop", function(e) {
-// 				e.preventDefault(); // prevent default action (open as link for some elements)
-//
-// 				if (dragStart) {
-// 					let firstVideo = e.target.closest(closestParentTagName);
-//
-// 					setCurrentVideoObserver();
-// 					loadMoreRelatedVideos(relatedVideos);
-// 					setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo);
-// 				}
-// 				dragStart = false;
-// 			});
-// 		}
-// 	}
-// }
-
 // ============================================================================
 // EventListeners
 // ============================================================================
