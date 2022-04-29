@@ -97,7 +97,7 @@ function setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo) {
 function redirectToNewFirstVideo(mutationList, videoStreamObserver) {
 	for (let mutation of mutationList) {
 		if (mutation.type === "attributes" && mutation.attributeName === "style") {
-			if (mutation.target.ended) {
+			if (mutation.target.ended) { // Video stream ended
 				window.location.href = newFirstVideoUrl;
 			}
 		}
@@ -123,15 +123,17 @@ function setShuffleButtonCss() {
 }
 
 function createShuffleButton() {
-	let relatedContainer = document.getElementById("related");
-	let button           = document.createElement("button");
-	button.className     = "shuffle-button";
-	button.innerText     = "Shuffle";
+	if (!shuffleButton) {
+		let relatedContainer = document.getElementById("related");
+		let button           = document.createElement("button");
+		button.className     = "shuffle-button";
+		button.innerText     = "Shuffle";
 
-	relatedContainer.insertBefore(button, relatedContainer.firstElementChild);
+		relatedContainer.insertBefore(button, relatedContainer.firstElementChild);
 
-	button.onclick = shuffleRelatedVideosList;
-	shuffleButton  = button;
+		button.onclick = shuffleRelatedVideosList;
+		shuffleButton  = button;
+	}
 }
 
 // ============================================================================
