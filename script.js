@@ -16,28 +16,16 @@ function init() {
 }
 
 function checkCurrentAppPath(mutationsList, appObserver) {
-	// TODO: Refactor
 	for (let mutation of mutationsList) {
 		if (mutation.type === "childList") {
-			// video recommendations on "/"
-			if (mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer") {
-				mutation.target.remove();
-			}
-			// recommendation filters when logged in
-			else if (mutation.target.tagName.toLowerCase() === "yt-related-chip-cloud-renderer") {
-				mutation.target.remove();
-			}
-			// comments on "/watch"
-			else if (mutation.target.id === "sections") {
+			if (mutation.target.tagName.toLowerCase() === "ytd-two-column-browse-results-renderer" // video recommendations on "/"
+					|| mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer" // video recommendations on "/"
+					|| mutation.target.tagName.toLowerCase() === "yt-related-chip-cloud-renderer" // recommendation filters when logged in
+					|| mutation.target.id === "sections") { // comments on "/watch"
 				mutation.target.remove();
 			}
 			// related videos' list on "/watch"
-			if (mutation.target.id === "contents"
-					&& mutation.target.className === "style-scope ytd-item-section-renderer") {
-				relatedVideosContainer = mutation.target;
-			}
-			else if (mutation.target.id === "items"
-					&& mutation.target.className === "style-scope ytd-watch-next-secondary-results-renderer") {
+			if (mutation.target.firstElementChild.tagName.toLowerCase() === "ytd-compact-video-renderer") {
 				relatedVideosContainer = mutation.target;
 			}
 		}
