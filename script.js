@@ -16,6 +16,7 @@ function init() {
 }
 
 function checkCurrentAppPath(mutationsList, appObserver) {
+	// TODO: Refactor
 	for (let mutation of mutationsList) {
 		if (mutation.type === "childList") {
 			// video recommendations on "/"
@@ -31,7 +32,12 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 				mutation.target.remove();
 			}
 			// related videos' list on "/watch"
-			else if (mutation.target.id === "contents" && mutation.target.childElementCount > 1) {
+			if (mutation.target.id === "contents"
+					&& mutation.target.className === "style-scope ytd-item-section-renderer") {
+				relatedVideosContainer = mutation.target;
+			}
+			else if (mutation.target.id === "items"
+					&& mutation.target.className === "style-scope ytd-watch-next-secondary-results-renderer") {
 				relatedVideosContainer = mutation.target;
 			}
 		}
