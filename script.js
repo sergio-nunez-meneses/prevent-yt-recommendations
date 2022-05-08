@@ -26,12 +26,6 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 					|| mutation.target.id === "sections") { // Comments on "/watch"
 				mutation.target.remove();
 			}
-			// TODO: Doesn't work
-			// Video pause overlay on "/watch"
-			if (mutation.target.tagName.toLowerCase() === "tp-yt-iron-overlay-backdrop") {
-				console.log(mutation.target, document.getElementById("confirm-button"));
-				document.getElementById("confirm-button").click();
-			}
 			// related videos' list on "/watch"
 			if (mutation.target.firstElementChild.tagName.toLowerCase() === "ytd-compact-video-renderer") {
 				relatedVideosContainer = mutation.target;
