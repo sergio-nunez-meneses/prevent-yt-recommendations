@@ -2,9 +2,10 @@
 //  Variables
 // ============================================================================
 const observerConfig = {attributes: true, childList: true, subtree: true};
+let newFirstVideoUrl = "";
 let isShuffled       = false;
 let pausePopupExists = false;
-let newFirstVideoUrl = "";
+let videoClicked     = false;
 let shuffleButton, relatedVideosContainer;
 
 // ============================================================================
@@ -43,13 +44,32 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 		}
 		else if (mutation.type === "attributes") {
 			if (mutation.target.tagName.toLowerCase() === "video") {
+				mutation.target.addEventListener("click", function(e) {
+					if (mutation.target.readyState > 2 && !mutation.target.paused
+							&& !mutation.target.ended && !videoClicked) {
+						videoClicked = true;
+					}
+					else if (mutation.target.readyState > 2 && mutation.target.paused
+							&& !mutation.target.ended && videoClicked) {
+						videoClicked = false;
+					}
+				})
+
 				// Unpause video after removing "Continue watching?" popup
 				if (mutation.target.readyState > 2 && mutation.target.paused && !mutation.target.ended
 						&& pausePopupExists) {
 					mutation.target.play();
-					document.body.dispatchEvent(new KeyboardEvent("keydown", {"key": "k"}));
 
 					pausePopupExists = false;
+				}
+				// Unpause video on click
+				else if (mutation.target.readyState > 2 && mutation.target.paused && !mutation.target.ended
+						&& !videoClicked) {
+					mutation.target.play();
+				}
+				else if (mutation.target.readyState > 2 && !mutation.target.paused && !mutation.target.ended
+						&& videoClicked) {
+					mutation.target.pause();
 				}
 			}
 		}
