@@ -149,6 +149,14 @@ function createShuffleButton() {
 	}
 }
 
+function now() {
+	return new Date().toTimeString().split(' ')[0];
+}
+
+function consoleLog(message) {
+	console.log(`${message} at ${now()}`);
+}
+
 // ============================================================================
 // Code to execute
 // ============================================================================
