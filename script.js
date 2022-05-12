@@ -42,32 +42,28 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			}
 		}
 		else if (mutation.type === "attributes") {
+			// Handle video playback
 			if (mutation.target.tagName.toLowerCase() === "video") {
 				mutation.target.addEventListener("click", function(e) {
-					if (mutation.target.readyState > 2 && !mutation.target.paused
-							&& !mutation.target.ended && !videoClicked) {
+					if (!mutation.target.paused && !mutation.target.ended && !videoClicked) {
 						videoClicked = true;
 					}
-					else if (mutation.target.readyState > 2 && mutation.target.paused
-							&& !mutation.target.ended && videoClicked) {
+					else if (mutation.target.paused && !mutation.target.ended && videoClicked) {
 						videoClicked = false;
 					}
 				})
 
-				// Unpause video after removing "Continue watching?" popup
-				if (mutation.target.readyState > 2 && mutation.target.paused && !mutation.target.ended
-						&& pausePopupExists) {
+				// Unpause after removing "Continue watching?" popup
+				if (mutation.target.paused && !mutation.target.ended && pausePopupExists) {
 					mutation.target.play();
 
 					pausePopupExists = false;
 				}
-				// Unpause video on click
-				else if (mutation.target.readyState > 2 && mutation.target.paused && !mutation.target.ended
-						&& !videoClicked) {
+				// Unpause on click
+				else if (mutation.target.paused && !mutation.target.ended && !videoClicked) {
 					mutation.target.play();
 				}
-				else if (mutation.target.readyState > 2 && !mutation.target.paused && !mutation.target.ended
-						&& videoClicked) {
+				else if (!mutation.target.paused && !mutation.target.ended && videoClicked) {
 					mutation.target.pause();
 				}
 				// Redirect to new first video
