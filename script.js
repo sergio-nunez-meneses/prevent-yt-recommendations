@@ -1,11 +1,11 @@
 // ============================================================================
 //  Variables
 // ============================================================================
-const observerConfig = {attributes: true, childList: true, subtree: true};
-let newFirstVideoUrl = "";
-let isShuffled       = false;
-let pausePopupExists = false;
-let videoClicked     = false;
+const observerConfig     = {attributes: true, childList: true, subtree: true};
+let newFirstVideoUrl     = "";
+let shuffleButtonClicked = false;
+let pausePopupExists     = false;
+let videoClicked         = false;
 let shuffleButton, relatedVideosContainer;
 
 // ============================================================================
@@ -33,7 +33,6 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 
 				createShuffleButton();
 			}
-			// TODO: Work in progress
 			// "Continue watching?" popup on "/watch"
 			if (mutation.target.tagName.toLowerCase() === "ytd-popup-container") {
 				mutation.target.click();
@@ -71,17 +70,13 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 						&& videoClicked) {
 					mutation.target.pause();
 				}
+				// Redirect to new first video
+				if (mutation.target.ended && newFirstVideoUrl !== "") {
+					window.location.href = newFirstVideoUrl;
+				}
 			}
 		}
 	}
-}
-
-function setCurrentVideoObserver() {
-	if (!isShuffled) {
-		let videoStreamObserver = new MutationObserver(redirectToNewFirstVideo);
-		videoStreamObserver.observe(document.getElementsByTagName("video")[0], observerConfig);
-	}
-	isShuffled = true;
 }
 
 function loadMoreRelatedVideos() {
@@ -95,7 +90,8 @@ function loadMoreRelatedVideos() {
 }
 
 function shuffleRelatedVideosList() {
-	setCurrentVideoObserver();
+	shuffleButtonClicked = true;
+
 	loadMoreRelatedVideos();
 
 	let relatedVideos      = relatedVideosContainer.children;
@@ -118,16 +114,6 @@ function setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo) {
 		relatedVideosContainer.insertBefore(newFirstVideo, firstVideo);
 
 		newFirstVideoUrl = newFirstVideo.children[0].children[0].children[0].href;
-	}
-}
-
-function redirectToNewFirstVideo(mutationList, videoStreamObserver) {
-	for (let mutation of mutationList) {
-		if (mutation.type === "attributes" && mutation.attributeName === "style") {
-			if (mutation.target.ended) { // Video stream ended
-				window.location.href = newFirstVideoUrl;
-			}
-		}
 	}
 }
 
