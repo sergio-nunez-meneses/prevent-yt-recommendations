@@ -2,8 +2,8 @@
 //  Variables
 // ============================================================================
 const observerConfig = {attributes: true, childList: true, subtree: true};
-let app              = document.getElementsByTagName("ytd-app")[0];
 let isShuffled       = false;
+let pausePopupExists = false;
 let newFirstVideoUrl = "";
 let shuffleButton, relatedVideosContainer;
 
@@ -14,7 +14,7 @@ function init() {
 	setShuffleButtonCss();
 
 	let appObserver = new MutationObserver(checkCurrentAppPath);
-	appObserver.observe(app, observerConfig);
+	appObserver.observe(document.body, observerConfig);
 }
 
 function checkCurrentAppPath(mutationsList, appObserver) {
@@ -26,11 +26,31 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 					|| mutation.target.id === "sections") { // Comments on "/watch"
 				mutation.target.remove();
 			}
-			// related videos' list on "/watch"
+			// Related videos' list on "/watch"
 			if (mutation.target.firstElementChild.tagName.toLowerCase() === "ytd-compact-video-renderer") {
 				relatedVideosContainer = mutation.target;
 
 				createShuffleButton();
+			}
+			// TODO: Work in progress
+			// "Continue watching?" popup on "/watch"
+			if (mutation.target.tagName.toLowerCase() === "ytd-popup-container") {
+				mutation.target.click();
+				mutation.target.remove();
+
+				pausePopupExists = true;
+			}
+		}
+		else if (mutation.type === "attributes") {
+			if (mutation.target.tagName.toLowerCase() === "video") {
+				// Unpause video after removing "Continue watching?" popup
+				if (mutation.target.readyState > 2 && mutation.target.paused && !mutation.target.ended
+						&& pausePopupExists) {
+					mutation.target.play();
+					document.body.dispatchEvent(new KeyboardEvent("keydown", {"key": "k"}));
+
+					pausePopupExists = false;
+				}
 			}
 		}
 	}
