@@ -50,7 +50,8 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			}
 		}
 		else if (mutation.type === "attributes") {
-			if (mutation.target.tagName.toLowerCase() === "video") { // Handle video playback
+			// Handle video playback
+			if (mutation.target.tagName.toLowerCase() === "video") {
 				mutation.target.addEventListener("click", function(e) {
 					if (!videoIsPaused(mutation.target) && !videoClicked) {
 						videoClicked = true;
@@ -67,7 +68,7 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 					pausePopupExists = false;
 				}
 				// Pause/unpause on click
-				else if (videoIsPaused(mutation.target) && !videoClicked) {
+				if (videoIsPaused(mutation.target) && !videoClicked) {
 					mutation.target.play();
 				}
 				else if (!videoIsPaused(mutation.target) && videoClicked) {
