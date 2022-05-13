@@ -31,7 +31,7 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			if (mutation.target.firstElementChild.tagName.toLowerCase() === "ytd-compact-video-renderer") {
 				relatedVideosContainer = mutation.target;
 				let relatedVideos      = relatedVideosContainer.children;
-				let loadMoreButton = relatedVideos[relatedVideos.length - 1].children["button"];
+				let loadMoreButton     = relatedVideos[relatedVideos.length - 1].children["button"];
 
 				// Autoload related videos' list
 				if (loadMoreButton) {
@@ -147,14 +147,6 @@ function createShuffleButton() {
 		button.onclick = shuffleRelatedVideosList;
 		shuffleButton  = button;
 	}
-}
-
-function now() {
-	return new Date().toTimeString().split(' ')[0];
-}
-
-function consoleLog(message) {
-	console.log(`${message} at ${now()}`);
 }
 
 // ============================================================================
