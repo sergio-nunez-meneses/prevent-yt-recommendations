@@ -23,7 +23,7 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 		if (mutation.type === "childList") {
 			if (mutation.target.tagName.toLowerCase() === "ytd-two-column-browse-results-renderer" // Video recommendations on "/"
 					|| mutation.target.tagName.toLowerCase() === "ytd-rich-grid-renderer"
-					|| mutation.target.tagName.toLowerCase() === "yt-related-chip-cloud-renderer" // Recommendation filters on logged in
+					|| mutation.target.tagName.toLowerCase() === "yt-related-chip-cloud-renderer" // Recommendation filters on "/watch" when logged in
 					|| mutation.target.id === "sections") { // Comments on "/watch"
 				mutation.target.remove();
 			}
