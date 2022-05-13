@@ -42,28 +42,27 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			}
 		}
 		else if (mutation.type === "attributes") {
-			// Handle video playback
-			if (mutation.target.tagName.toLowerCase() === "video") {
+			if (mutation.target.tagName.toLowerCase() === "video") { // Handle video playback
 				mutation.target.addEventListener("click", function(e) {
-					if (!mutation.target.paused && !mutation.target.ended && !videoClicked) {
+					if (!videoIsPaused(mutation.target) && !videoClicked) {
 						videoClicked = true;
 					}
-					else if (mutation.target.paused && !mutation.target.ended && videoClicked) {
+					else if (videoIsPaused(mutation.target) && videoClicked) {
 						videoClicked = false;
 					}
 				})
 
 				// Unpause after removing "Continue watching?" popup
-				if (mutation.target.paused && !mutation.target.ended && pausePopupExists) {
+				if (videoIsPaused(mutation.target) && pausePopupExists) {
 					mutation.target.play();
 
 					pausePopupExists = false;
 				}
-				// Unpause on click
-				else if (mutation.target.paused && !mutation.target.ended && !videoClicked) {
+				// Pause/unpause on click
+				else if (videoIsPaused(mutation.target) && !videoClicked) {
 					mutation.target.play();
 				}
-				else if (!mutation.target.paused && !mutation.target.ended && videoClicked) {
+				else if (!videoIsPaused(mutation.target) && videoClicked) {
 					mutation.target.pause();
 				}
 				// Redirect to new first video
@@ -111,6 +110,10 @@ function setNewFirstVideo(relatedVideosContainer, newFirstVideo, firstVideo) {
 
 		newFirstVideoUrl = newFirstVideo.children[0].children[0].children[0].href;
 	}
+}
+
+function videoIsPaused(video) {
+	return video.paused && !video.ended;
 }
 
 function setShuffleButtonCss() {
