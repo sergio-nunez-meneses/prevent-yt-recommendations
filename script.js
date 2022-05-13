@@ -6,7 +6,7 @@ let newFirstVideoUrl     = "";
 let shuffleButtonClicked = false;
 let pausePopupExists     = false;
 let videoClicked         = false;
-let shuffleButton, relatedVideosContainer;
+let relatedVideosContainer, shuffleButton;
 
 // ============================================================================
 // Functions
@@ -30,6 +30,14 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 			// Related videos' list on "/watch"
 			if (mutation.target.firstElementChild.tagName.toLowerCase() === "ytd-compact-video-renderer") {
 				relatedVideosContainer = mutation.target;
+				let relatedVideos      = relatedVideosContainer.children;
+				let loadMoreButton = relatedVideos[relatedVideos.length - 1].children["button"];
+
+				// Autoload related videos' list
+				if (loadMoreButton) {
+					loadMoreButton.removeAttribute("hidden");
+					loadMoreButton.firstElementChild.firstElementChild.click();
+				}
 
 				createShuffleButton();
 			}
@@ -74,21 +82,8 @@ function checkCurrentAppPath(mutationsList, appObserver) {
 	}
 }
 
-function loadMoreRelatedVideos() {
-	let relatedVideos  = relatedVideosContainer.children;
-	let loadMoreButton = relatedVideos[relatedVideos.length - 1].children["button"];
-
-	if (loadMoreButton) {
-		loadMoreButton.removeAttribute("hidden");
-		loadMoreButton.firstElementChild.firstElementChild.click();
-	}
-}
-
 function shuffleRelatedVideosList() {
-	shuffleButtonClicked = true;
-
-	loadMoreRelatedVideos();
-
+	shuffleButtonClicked   = true;
 	let relatedVideos      = relatedVideosContainer.children;
 	let totalRelatedVideos = relatedVideos.length;
 
